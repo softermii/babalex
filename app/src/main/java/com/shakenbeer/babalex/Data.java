@@ -52,6 +52,8 @@ public class Data {
         circles.add(new Animal("Circle 2", R.drawable.item_background_round));
         circles.add(new Animal("Circle 3", R.drawable.item_background_round));
         circles.add(new Animal("Circle 4", R.drawable.item_background_round));
+
+        animals.addCategory(circles);
     }
 
 
