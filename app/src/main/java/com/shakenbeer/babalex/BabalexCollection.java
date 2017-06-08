@@ -27,12 +27,13 @@ public class BabalexCollection {
         return data.get(category).get(index);
     }
 
+    public List<Babalex> get(int category) {
+        return data.get(category);
+    }
+
 
     public int size() {
-        return linearData.size();
+        return data.size();
     }
 
-    public Babalex get(int linearPosition) {
-        return linearData.get(linearPosition);
-    }
 }

@@ -11,33 +11,39 @@ public class Data {
 
     private static List<Babalex> circles = new ArrayList<>();
 
+    private static final List<Babalex> cats;
+
+    private static final List<Babalex> dogs;
+
+    private static final List<Babalex> mouses;
+
     static {
-        List<Babalex> cats = new LinkedList<>();
+        cats = new LinkedList<>();
         cats.add(new Animal("Cat 0", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 1", R.drawable.cat_1_800px));
-        cats.add(new Animal("Cat 2", R.drawable.cat_2_800px));
-        cats.add(new Animal("Cat 3", R.drawable.cat_3_800px));
-        cats.add(new Animal("Cat 4", R.drawable.cat_4_800px));
-        cats.add(new Animal("Cat 5", R.drawable.cat_5_800px));
-        cats.add(new Animal("Cat 6", R.drawable.cat_6_800px));
-        cats.add(new Animal("Cat 7", R.drawable.cat_7_800px));
+        cats.add(new Animal("Cat 1", R.drawable.cat_0_800px));
+        cats.add(new Animal("Cat 2", R.drawable.cat_0_800px));
+        cats.add(new Animal("Cat 3", R.drawable.cat_0_800px));
+        cats.add(new Animal("Cat 4", R.drawable.cat_0_800px));
+        cats.add(new Animal("Cat 5", R.drawable.cat_0_800px));
+        cats.add(new Animal("Cat 6", R.drawable.cat_0_800px));
+        cats.add(new Animal("Cat 7", R.drawable.cat_0_800px));
         animals.addCategory(cats);
 
-        List<Babalex> dogs = new LinkedList<>();
-        dogs.add(new Animal("Dog 0", R.drawable.dog_0_800px));
+        dogs = new LinkedList<>();
+        dogs.add(new Animal("Dog 0", R.drawable.dog_1_800px));
         dogs.add(new Animal("Dog 1", R.drawable.dog_1_800px));
-        dogs.add(new Animal("Dog 2", R.drawable.dog_2_800px));
-        dogs.add(new Animal("Dog 3", R.drawable.dog_3_800px));
-        dogs.add(new Animal("Dog 4", R.drawable.dog_4_800px));
+        dogs.add(new Animal("Dog 2", R.drawable.dog_1_800px));
+        dogs.add(new Animal("Dog 3", R.drawable.dog_1_800px));
+        dogs.add(new Animal("Dog 4", R.drawable.dog_1_800px));
         animals.addCategory(dogs);
 
-        List<Babalex> mouses = new LinkedList<>();
-        mouses.add(new Animal("Mouse 0", R.drawable.mouse_0_800px));
-        mouses.add(new Animal("Mouse 1", R.drawable.mouse_1_800px));
-        mouses.add(new Animal("Mouse 2", R.drawable.mouse_2_800px));
-        mouses.add(new Animal("Mouse 3", R.drawable.mouse_3_800px));
-        mouses.add(new Animal("Mouse 4", R.drawable.mouse_4_800px));
-        mouses.add(new Animal("Mouse 5", R.drawable.mouse_5_800px));
+        mouses = new LinkedList<>();
+        mouses.add(new Animal("Mouse 0", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Mouse 1", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Mouse 2", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Mouse 3", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Mouse 4", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Mouse 5", R.drawable.mouse_6_800px));
         mouses.add(new Animal("Mouse 6", R.drawable.mouse_6_800px));
         animals.addCategory(mouses);
 
@@ -46,6 +52,19 @@ public class Data {
         circles.add(new Animal("Circle 2", R.drawable.item_background_round));
         circles.add(new Animal("Circle 3", R.drawable.item_background_round));
         circles.add(new Animal("Circle 4", R.drawable.item_background_round));
+    }
+
+
+    public static List<Babalex> cts() {
+        return cats;
+    }
+
+    public static List<Babalex> dogs() {
+        return dogs;
+    }
+
+    public static List<Babalex> mouses() {
+        return mouses;
     }
 
     public static BabalexCollection animals() {

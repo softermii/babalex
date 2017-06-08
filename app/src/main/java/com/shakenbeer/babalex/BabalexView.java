@@ -40,6 +40,7 @@ public class BabalexView extends RecyclerView {
     }
 
     private void init(Context context, @Nullable AttributeSet attrs) {
+        setClipToPadding(false);
         setLayoutManager(new BabalexLayoutManager(context));
         snapperCarr.attachToRecyclerView(this);
         setAdapter(babalexAdapter);
