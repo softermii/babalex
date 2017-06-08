@@ -19,39 +19,39 @@ public class Data {
 
     static {
         cats = new LinkedList<>();
-        cats.add(new Animal("Cat 0", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 1", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 2", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 3", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 4", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 5", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 6", R.drawable.cat_0_800px));
-        cats.add(new Animal("Cat 7", R.drawable.cat_0_800px));
+        cats.add(new Animal("Verginius Pontius Rufinus", R.drawable.cat_0_800px));
+        cats.add(new Animal("Lucretia Claudius Rufinus", R.drawable.cat_0_800px));
+        cats.add(new Animal("Priscilla Marcella Cicero", R.drawable.cat_0_800px));
+        cats.add(new Animal("Quintillus Publius Balbus", R.drawable.cat_0_800px));
+        cats.add(new Animal("Maximinus Aulus Loukios", R.drawable.cat_0_800px));
+        cats.add(new Animal("Duilius Valens Marcius", R.drawable.cat_0_800px));
+        cats.add(new Animal("Aelius Severinus Sabinus", R.drawable.cat_0_800px));
+        cats.add(new Animal("Publius Crispinus Rufina", R.drawable.cat_0_800px));
         animals.addCategory(cats);
 
         dogs = new LinkedList<>();
-        dogs.add(new Animal("Dog 0", R.drawable.dog_1_800px));
-        dogs.add(new Animal("Dog 1", R.drawable.dog_1_800px));
-        dogs.add(new Animal("Dog 2", R.drawable.dog_1_800px));
-        dogs.add(new Animal("Dog 3", R.drawable.dog_1_800px));
-        dogs.add(new Animal("Dog 4", R.drawable.dog_1_800px));
+        dogs.add(new Animal("Wandal Brunhilde Swanahilda", R.drawable.dog_1_800px));
+        dogs.add(new Animal("Ricohard Giltbert Otto", R.drawable.dog_1_800px));
+        dogs.add(new Animal("Alfher Hrodger Reinald", R.drawable.dog_1_800px));
+        dogs.add(new Animal("Ida Albertus Willahelm", R.drawable.dog_1_800px));
+        dogs.add(new Animal("Raginmund Hariman Auda", R.drawable.dog_1_800px));
         animals.addCategory(dogs);
 
         mouses = new LinkedList<>();
-        mouses.add(new Animal("Mouse 0", R.drawable.mouse_6_800px));
-        mouses.add(new Animal("Mouse 1", R.drawable.mouse_6_800px));
-        mouses.add(new Animal("Mouse 2", R.drawable.mouse_6_800px));
-        mouses.add(new Animal("Mouse 3", R.drawable.mouse_6_800px));
-        mouses.add(new Animal("Mouse 4", R.drawable.mouse_6_800px));
-        mouses.add(new Animal("Mouse 5", R.drawable.mouse_6_800px));
-        mouses.add(new Animal("Mouse 6", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Leontios Olympias Olympos", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Charmion Kleitos Andreas", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Plato Hyacinthus Cleitus", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Dionysius Euphemios Eugenios", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Aristides Linos Kleopatros", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Basilius Herakleides Eudoxia", R.drawable.mouse_6_800px));
+        mouses.add(new Animal("Nikomachos Pericles Antiochus", R.drawable.mouse_6_800px));
         animals.addCategory(mouses);
 
-        circles.add(new Animal("Circle 0", R.drawable.item_background_round));
-        circles.add(new Animal("Circle 1", R.drawable.item_background_round));
-        circles.add(new Animal("Circle 2", R.drawable.item_background_round));
-        circles.add(new Animal("Circle 3", R.drawable.item_background_round));
-        circles.add(new Animal("Circle 4", R.drawable.item_background_round));
+        circles.add(new Animal("Nahor", R.drawable.item_background_round));
+        circles.add(new Animal("Kenanyahu", R.drawable.item_background_round));
+        circles.add(new Animal("Jabin", R.drawable.item_background_round));
+        circles.add(new Animal("Golyat", R.drawable.item_background_round));
+        circles.add(new Animal("Meshach", R.drawable.item_background_round));
 
         animals.addCategory(circles);
     }

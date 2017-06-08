@@ -23,6 +23,7 @@ public class Animal implements Babalex {
         return imageUri;
     }
 
+    @Override
     public String getName() {
         return name;
     }

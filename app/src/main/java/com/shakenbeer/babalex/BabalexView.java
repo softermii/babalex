@@ -7,6 +7,7 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -63,6 +64,22 @@ public class BabalexView extends RecyclerView {
             float height = child.getChildAt(0).getHeight();
             pivotY = height + 0.5f * (scaleFactor * height / (1 - scaleFactor));
             initRescale(child);
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+            Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
+    }
+
+    private String state(int state) {
+        if (state == SCROLL_STATE_IDLE) {
+            return "idle";
+        } else if (state == SCROLL_STATE_DRAGGING) {
+            return "dragging";
+        } else /*if (state == SCROLL_STATE_SETTLING)*/{
+            return "settling";
         }
     }
 
