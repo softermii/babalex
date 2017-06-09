@@ -9,6 +9,8 @@ import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
@@ -19,6 +21,30 @@ public class MainActivity extends AppCompatActivity {
 
     private SuperBabalexAdapter superBabalexAdapter;
 
+    private BabalexView.ScrollListener  horizontalScrollListener = new BabalexView.ScrollListener() {
+        @Override
+        public void hideToLeft() {
+            textView.setText("To the left");
+        }
+
+        @Override
+        public void hideToRight() {
+            textView.setText("To the right");
+        }
+
+        @Override
+        public void showFromRight(Babalex babalex) {
+
+        }
+
+        @Override
+        public void showFromLeft(Babalex babalex) {
+
+        }
+    };
+
+    private TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
 //        babalexView = (BabalexView) findViewById(R.id.babalexView);
 //        babalexView.setItems(Data.dogs());
         superBabalex = (RecyclerView) findViewById(R.id.super_babalex);
-        superBabalexAdapter = new SuperBabalexAdapter(Data.animals());
+
+        superBabalexAdapter = new SuperBabalexAdapter(Data.animals(), horizontalScrollListener);
         superBabalex.setAdapter(superBabalexAdapter);
 
         superBabalex.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
@@ -62,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+
+        textView = (TextView) findViewById(R.id.textView);
 
     }
 

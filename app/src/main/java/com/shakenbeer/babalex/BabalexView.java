@@ -22,9 +22,22 @@ public class BabalexView extends RecyclerView {
     private float pivotY;
     private float scaleFactor;
 
-    private final SnapHelper snapperCarr = new PagerSnapHelper();
+    private final SnapHelper snapperCarr = new PagerSnapHelper() {
+        @Override
+        public boolean onFling(int velocityX, int velocityY) {
+            Log.d("BabalexView", "onFling");
+            return super.onFling(velocityX, velocityY);
+        }
+    };
 
     private final DefaultBabalexAdapter babalexAdapter = new DefaultBabalexAdapter();
+
+    private ScrollListener scrollListener;
+    private boolean scrollJustStarted = false;
+
+    public void setScrollListener(ScrollListener scrollListener) {
+        this.scrollListener = scrollListener;
+    }
 
     public BabalexView(Context context) {
         super(context);
@@ -44,6 +57,7 @@ public class BabalexView extends RecyclerView {
         setClipToPadding(false);
         setLayoutManager(new BabalexLayoutManager(context));
         snapperCarr.attachToRecyclerView(this);
+
         setAdapter(babalexAdapter);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.BabalexView, 0, 0);
 
@@ -64,51 +78,6 @@ public class BabalexView extends RecyclerView {
             float height = child.getChildAt(0).getHeight();
             pivotY = height + 0.5f * (scaleFactor * height / (1 - scaleFactor));
             initRescale(child);
-        }
-    }
-
-    @Override
-    public void onScrollStateChanged(int state) {
-        super.onScrollStateChanged(state);
-            Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
-    }
-
-    private String state(int state) {
-        if (state == SCROLL_STATE_IDLE) {
-            return "idle";
-        } else if (state == SCROLL_STATE_DRAGGING) {
-            return "dragging";
-        } else /*if (state == SCROLL_STATE_SETTLING)*/{
-            return "settling";
-        }
-    }
-
-    @Override
-    public void onScrolled(int dx, int dy) {
-        super.onScrolled(dx, dy);
-
-        int childCount = getChildCount();
-        int containerWidth = getChildAt(0).getWidth();
-        int padding = (getWidth() - containerWidth) / 2;
-
-        for (int j = 0; j < childCount; j++) {
-            ViewGroup container = (ViewGroup) getChildAt(j);
-            View child = container.getChildAt(0);
-            float rate = 0;
-
-            if (container.getLeft() <= padding) {
-                if (container.getLeft() >= padding - container.getWidth()) {
-                    rate = (padding - container.getLeft()) * 1f / container.getWidth();
-                } else {
-                    rate = 1;
-                }
-                scale(child, containerWidth, 1 - rate * (1 - scaleFactor));
-            } else {
-                if (container.getLeft() <= getWidth() - padding) {
-                    rate = (getWidth() - padding - container.getLeft()) * 1f / container.getWidth();
-                }
-                scale(child, 0, scaleFactor + rate * (1 - scaleFactor));
-            }
         }
     }
 
@@ -143,11 +112,87 @@ public class BabalexView extends RecyclerView {
         }
     }
 
+    @Override
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+            Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
+        if (state == SCROLL_STATE_DRAGGING) {
+            scrollJustStarted = true;
+        }
+    }
+
+    private String state(int state) {
+        if (state == SCROLL_STATE_IDLE) {
+            return "idle";
+        } else if (state == SCROLL_STATE_DRAGGING) {
+            return "dragging";
+        } else /*if (state == SCROLL_STATE_SETTLING)*/{
+            return "settling";
+        }
+    }
+
+    @Override
+    public void onScrolled(int dx, int dy) {
+        super.onScrolled(dx, dy);
+
+        processScroll(dx);
+
+        int childCount = getChildCount();
+        int containerWidth = getChildAt(0).getWidth();
+        int padding = (getWidth() - containerWidth) / 2;
+
+        for (int j = 0; j < childCount; j++) {
+            scaleChild(j, containerWidth, padding);
+        }
+    }
+
+    private void processScroll(int dx) {
+        if (scrollJustStarted) {
+            if (scrollListener != null) {
+                if (dx > 0) {
+                    scrollListener.hideToLeft();
+                } else {
+                    scrollListener.hideToRight();
+                }
+            }
+        }
+        scrollJustStarted = false;
+    }
+
+    private void scaleChild(int layoutIndex, int containerWidth, int padding) {
+        ViewGroup container = (ViewGroup) getChildAt(layoutIndex);
+        View child = container.getChildAt(0);
+        float rate = 0;
+
+        if (container.getLeft() <= padding) {
+            if (container.getLeft() >= padding - container.getWidth()) {
+                rate = (padding - container.getLeft()) * 1f / container.getWidth();
+            } else {
+                rate = 1;
+            }
+            scale(child, containerWidth, 1 - rate * (1 - scaleFactor));
+        } else {
+            if (container.getLeft() <= getWidth() - padding) {
+                rate = (getWidth() - padding - container.getLeft()) * 1f / container.getWidth();
+            }
+            scale(child, 0, scaleFactor + rate * (1 - scaleFactor));
+        }
+    }
+
     private void scale(View view, float pivotX, float scale) {
         view.setPivotX(pivotX);
         view.setPivotY(pivotY);
         view.setScaleX(scale);
         view.setScaleY(scale);
+    }
+
+    interface ScrollListener {
+        void hideToLeft();
+        void hideToRight();
+
+        void showFromRight(Babalex babalex);
+        void showFromLeft(Babalex babalex);
+
     }
 
 }

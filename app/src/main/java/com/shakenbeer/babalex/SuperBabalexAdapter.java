@@ -10,14 +10,17 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
 
     BabalexCollection data;
 
-    public SuperBabalexAdapter(BabalexCollection data) {
+    BabalexView.ScrollListener scrollListener;
+
+    public SuperBabalexAdapter(BabalexCollection data, BabalexView.ScrollListener scrollListener) {
         this.data = data;
+        this.scrollListener = scrollListener;
     }
 
     @Override
     public SuperBabalexViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_super_babalex, parent, false);
-        return new SuperBabalexViewHolder(view);
+        return new SuperBabalexViewHolder(view, scrollListener);
     }
 
     @Override
@@ -34,9 +37,10 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
 
         BabalexView babalexView;
 
-        public SuperBabalexViewHolder(View itemView) {
+        public SuperBabalexViewHolder(View itemView, BabalexView.ScrollListener scrollListener) {
             super(itemView);
             babalexView = (BabalexView) itemView.findViewById(R.id.babalexView);
+            babalexView.setScrollListener(scrollListener);
         }
     }
 }
