@@ -1,5 +1,7 @@
 package com.shakenbeer.babalex;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +11,8 @@ import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,15 +25,29 @@ public class MainActivity extends AppCompatActivity {
 
     private SuperBabalexAdapter superBabalexAdapter;
 
-    private BabalexView.ScrollListener  horizontalScrollListener = new BabalexView.ScrollListener() {
+    private DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
+
+    private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
         public void hideToLeft() {
-            textView.setText("To the left");
+            Log.d("MainActivity", "start x = " + textView.getX() + ", translationX = " + textView.getTranslationX());
+            textView.animate()
+                    .translationX(-50)
+                    .alpha(0)
+                    .setDuration(150)
+                    .setInterpolator(decelerateInterpolator)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            Log.d("MainActivity", "end   x = " + textView.getX() + ", translationX = " + textView.getTranslationX());
+                        }
+                    });
         }
 
         @Override
         public void hideToRight() {
-            textView.setText("To the right");
+            textView.animate().translationX(50).alpha(0).setDuration(150).setInterpolator(decelerateInterpolator);
         }
 
         @Override
@@ -39,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void showFromLeft(Babalex babalex) {
-
+            textView.animate().translationX(0).alpha(1).setDuration(200).setInterpolator(decelerateInterpolator);
         }
     };
 
@@ -49,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        babalexView = (BabalexView) findViewById(R.id.babalexView);
-//        babalexView.setItems(Data.dogs());
+
         superBabalex = (RecyclerView) findViewById(R.id.super_babalex);
 
         superBabalexAdapter = new SuperBabalexAdapter(Data.animals(), horizontalScrollListener);
@@ -79,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     return "idle";
                 } else if (state == SCROLL_STATE_DRAGGING) {
                     return "dragging";
-                } else /*if (state == SCROLL_STATE_SETTLING)*/{
+                } else /*if (state == SCROLL_STATE_SETTLING)*/ {
                     return "settling";
                 }
             }

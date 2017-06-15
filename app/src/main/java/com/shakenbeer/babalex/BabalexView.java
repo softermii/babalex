@@ -32,10 +32,11 @@ public class BabalexView extends RecyclerView {
 
     private final DefaultBabalexAdapter babalexAdapter = new DefaultBabalexAdapter();
 
+    @Nullable
     private ScrollListener scrollListener;
     private boolean scrollJustStarted = false;
 
-    public void setScrollListener(ScrollListener scrollListener) {
+    public void setScrollListener(@Nullable ScrollListener scrollListener) {
         this.scrollListener = scrollListener;
     }
 
@@ -123,6 +124,9 @@ public class BabalexView extends RecyclerView {
 
     private String state(int state) {
         if (state == SCROLL_STATE_IDLE) {
+            if (scrollListener != null) {
+                scrollListener.showFromLeft(null);
+            }
             return "idle";
         } else if (state == SCROLL_STATE_DRAGGING) {
             return "dragging";
