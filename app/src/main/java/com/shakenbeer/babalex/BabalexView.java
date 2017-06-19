@@ -21,6 +21,7 @@ public class BabalexView extends RecyclerView {
 
     private float pivotY;
     private float scaleFactor;
+    private int lastState = SCROLL_STATE_IDLE;
 
     private final SnapHelper snapperCarr = new PagerSnapHelper() {
         @Override
@@ -35,6 +36,7 @@ public class BabalexView extends RecyclerView {
     @Nullable
     private ScrollListener scrollListener;
     private boolean scrollJustStarted = false;
+    private int lastSign = 1;
 
     public void setScrollListener(@Nullable ScrollListener scrollListener) {
         this.scrollListener = scrollListener;
@@ -116,21 +118,27 @@ public class BabalexView extends RecyclerView {
     @Override
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
-            Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
-        if (state == SCROLL_STATE_DRAGGING) {
+        //Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
+        if (state == SCROLL_STATE_IDLE) {
+            if (lastState == SCROLL_STATE_SETTLING && scrollListener != null) {
+                if (lastSign > 0) {
+                    scrollListener.showFromRight(null);
+                } else if (lastSign < 0) {
+                    scrollListener.showFromLeft(null);
+                }
+            }
+        } else if (state == SCROLL_STATE_DRAGGING) {
             scrollJustStarted = true;
         }
+        lastState = state;
     }
 
     private String state(int state) {
         if (state == SCROLL_STATE_IDLE) {
-            if (scrollListener != null) {
-                scrollListener.showFromLeft(null);
-            }
             return "idle";
         } else if (state == SCROLL_STATE_DRAGGING) {
             return "dragging";
-        } else /*if (state == SCROLL_STATE_SETTLING)*/{
+        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
             return "settling";
         }
     }
@@ -138,24 +146,33 @@ public class BabalexView extends RecyclerView {
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
-
+//        Log.d("BabalexView", "dx = " + dx);
         processScroll(dx);
 
         int childCount = getChildCount();
         int containerWidth = getChildAt(0).getWidth();
         int padding = (getWidth() - containerWidth) / 2;
 
-        for (int j = 0; j < childCount; j++) {
-            scaleChild(j, containerWidth, padding);
+        for (int layoutIndex = 0; layoutIndex < childCount; layoutIndex++) {
+            ViewGroup container = (ViewGroup) getChildAt(layoutIndex);
+            if (container.getX() >= 110 && container.getX() <= 210) {
+                Log.d("BabalexView", "child = " + layoutIndex + " is in \"animation zone\"");
+            }
+            scaleChild(container, padding);
         }
     }
 
     private void processScroll(int dx) {
+        if (dx > 0) {
+            lastSign = 1;
+        } else if (dx < 0) {
+            lastSign = -1;
+        }
         if (scrollJustStarted) {
             if (scrollListener != null) {
                 if (dx > 0) {
                     scrollListener.hideToLeft();
-                } else {
+                } else if (dx < 0) {
                     scrollListener.hideToRight();
                 }
             }
@@ -163,8 +180,8 @@ public class BabalexView extends RecyclerView {
         scrollJustStarted = false;
     }
 
-    private void scaleChild(int layoutIndex, int containerWidth, int padding) {
-        ViewGroup container = (ViewGroup) getChildAt(layoutIndex);
+    private void scaleChild(ViewGroup container, int padding) {
+
         View child = container.getChildAt(0);
         float rate = 0;
 
@@ -174,7 +191,7 @@ public class BabalexView extends RecyclerView {
             } else {
                 rate = 1;
             }
-            scale(child, containerWidth, 1 - rate * (1 - scaleFactor));
+            scale(child, container.getWidth(), 1 - rate * (1 - scaleFactor));
         } else {
             if (container.getLeft() <= getWidth() - padding) {
                 rate = (getWidth() - padding - container.getLeft()) * 1f / container.getWidth();
@@ -192,9 +209,11 @@ public class BabalexView extends RecyclerView {
 
     interface ScrollListener {
         void hideToLeft();
+
         void hideToRight();
 
         void showFromRight(Babalex babalex);
+
         void showFromLeft(Babalex babalex);
 
     }
