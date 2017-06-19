@@ -29,41 +29,10 @@ public class MainActivity extends AppCompatActivity {
 
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
-        public void hideToLeft() {
-            Log.d("MainActivity", "start x = " + textView.getX() + ", translationX = " + textView.getTranslationX());
-            textView.animate()
-                    .translationX(-50f)
-                    .alpha(0)
-                    .setDuration(150)
-                    .setInterpolator(decelerateInterpolator)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            Log.d("MainActivity", "end   x = " + textView.getX() + ", translationX = " + textView.getTranslationX());
-                        }
-                    });
-        }
-
-        @Override
-        public void hideToRight() {
-            textView.animate()
-                    .translationX(50f)
-                    .alpha(0)
-                    .setDuration(150)
-                    .setInterpolator(decelerateInterpolator);
-        }
-
-        @Override
-        public void showFromRight(Babalex babalex) {
-            textView.setTranslationX(50f);
-            textView.animate().translationX(0).alpha(1).setDuration(200).setInterpolator(decelerateInterpolator);
-        }
-
-        @Override
-        public void showFromLeft(Babalex babalex) {
-            textView.setTranslationX(-50f);
-            textView.animate().translationX(0).alpha(1).setDuration(200).setInterpolator(decelerateInterpolator);
+        public void onAnimate(float v) {
+            Log.d("MainActivity", "onAnimate v = " + v);
+            textView.setTranslationX(v);
+            textView.setAlpha(1 - Math.abs(v) / 50);
         }
     };
 

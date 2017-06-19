@@ -21,7 +21,6 @@ public class BabalexView extends RecyclerView {
 
     private float pivotY;
     private float scaleFactor;
-    private int lastState = SCROLL_STATE_IDLE;
 
     private final SnapHelper snapperCarr = new PagerSnapHelper() {
         @Override
@@ -36,7 +35,6 @@ public class BabalexView extends RecyclerView {
     @Nullable
     private ScrollListener scrollListener;
     private boolean scrollJustStarted = false;
-    private int lastSign = 1;
 
     public void setScrollListener(@Nullable ScrollListener scrollListener) {
         this.scrollListener = scrollListener;
@@ -119,18 +117,6 @@ public class BabalexView extends RecyclerView {
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
         //Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
-        if (state == SCROLL_STATE_IDLE) {
-            if (lastState == SCROLL_STATE_SETTLING && scrollListener != null) {
-                if (lastSign > 0) {
-                    scrollListener.showFromRight(null);
-                } else if (lastSign < 0) {
-                    scrollListener.showFromLeft(null);
-                }
-            }
-        } else if (state == SCROLL_STATE_DRAGGING) {
-            scrollJustStarted = true;
-        }
-        lastState = state;
     }
 
     private String state(int state) {
@@ -156,28 +142,16 @@ public class BabalexView extends RecyclerView {
         for (int layoutIndex = 0; layoutIndex < childCount; layoutIndex++) {
             ViewGroup container = (ViewGroup) getChildAt(layoutIndex);
             if (container.getX() >= 110 && container.getX() <= 210) {
-                Log.d("BabalexView", "child = " + layoutIndex + " is in \"animation zone\"");
+                if (scrollListener != null) {
+                    scrollListener.onAnimate(container.getX() - 160);
+                }
             }
             scaleChild(container, padding);
         }
     }
 
     private void processScroll(int dx) {
-        if (dx > 0) {
-            lastSign = 1;
-        } else if (dx < 0) {
-            lastSign = -1;
-        }
-        if (scrollJustStarted) {
-            if (scrollListener != null) {
-                if (dx > 0) {
-                    scrollListener.hideToLeft();
-                } else if (dx < 0) {
-                    scrollListener.hideToRight();
-                }
-            }
-        }
-        scrollJustStarted = false;
+
     }
 
     private void scaleChild(ViewGroup container, int padding) {
@@ -208,13 +182,8 @@ public class BabalexView extends RecyclerView {
     }
 
     interface ScrollListener {
-        void hideToLeft();
 
-        void hideToRight();
-
-        void showFromRight(Babalex babalex);
-
-        void showFromLeft(Babalex babalex);
+        void onAnimate(float v);
 
     }
 
