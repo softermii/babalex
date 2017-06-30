@@ -21,7 +21,7 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView superBabalex;
+    private RecyclerView superBabalex;
 
     private SuperBabalexAdapter superBabalexAdapter;
 
