@@ -35,7 +35,6 @@ public class BabalexView extends RecyclerView {
 
     }
 
-
     private int padding;
     private float pivotY;
     private float scaleFactor;
@@ -82,6 +81,8 @@ public class BabalexView extends RecyclerView {
         scaleFactor = a.getFloat(R.styleable.BabalexView_scaleFactor, DEFAULT_SCALE_FACTOR);
         if (scaleFactor < MIN_SCALE_FACTOR) scaleFactor = MIN_SCALE_FACTOR;
         if (scaleFactor > MAX_SCALE_FACTOR) scaleFactor = MAX_SCALE_FACTOR;
+
+        padding = getPaddingStart();
     }
 
     public void setItems(List<Babalex> items) {
@@ -90,22 +91,16 @@ public class BabalexView extends RecyclerView {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.d("BabalexView", "onLayout");
         super.onLayout(changed, l, t, r, b);
         if (getChildCount() > 0) {
-            Log.d("BabalexView", "onLayout getChildCount() > 0");
             ViewGroup child = (ViewGroup) getChildAt(0);
-            checkTargetCandidate(child);
             float height = child.getChildAt(0).getHeight();
             pivotY = height + 0.5f * (scaleFactor * height / (1 - scaleFactor));
-            int containerWidth = child.getWidth();
-            padding = (getWidth() - containerWidth) / 2;
             initRescale(child);
         }
     }
 
     private void initRescale(ViewGroup firstChild) {
-        Log.d("BabalexView", "initRescale scaleFactor = " + scaleFactor);
         float width = firstChild.getChildAt(0).getWidth();
         if (getChildCount() >= 3) {
             if (getChildAt(0) != null) {
@@ -136,10 +131,8 @@ public class BabalexView extends RecyclerView {
         }
     }
 
-
     @Override
     public void onScrolled(int dx, int dy) {
-        Log.d("BabalexView", "onScrolled");
         super.onScrolled(dx, dy);
         int childCount = getChildCount();
 
@@ -164,7 +157,6 @@ public class BabalexView extends RecyclerView {
 
     private void processTargetChild() {
         targetPos = targetInThreshold();
-        Log.d("BabalexView", "onScrolled targetPos = " + targetPos);
         if (targetPos == CENTER) {
             center();
         } else if (targetPos == LEFT) {
@@ -210,7 +202,6 @@ public class BabalexView extends RecyclerView {
     }
 
     private void stopped() {
-        Log.d("BabalexView", "stopped");
         if (scrollListener != null) {
             float deltaX = 0;
             float alpha = 1;
@@ -219,7 +210,6 @@ public class BabalexView extends RecyclerView {
     }
 
     private void right() {
-        Log.d("BabalexView", "right");
         if (scrollListener != null) {
             float deltaX = threshold;
             float alpha = 0;
@@ -228,7 +218,6 @@ public class BabalexView extends RecyclerView {
     }
 
     private void left() {
-        Log.d("BabalexView", "left");
         if (scrollListener != null) {
             float deltaX = -threshold;
             float alpha = 0;
@@ -237,7 +226,7 @@ public class BabalexView extends RecyclerView {
     }
 
     private void center() {
-        Log.d("BabalexView", "center");
+        Log.d("BabalexView","center");
         if (scrollListener != null) {
             if (targetChild != null) {
                 float deltaX = targetChild.getX() - padding;
@@ -271,7 +260,6 @@ public class BabalexView extends RecyclerView {
     @Override
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
-        //Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
 
         if (state == SCROLL_STATE_IDLE && scrollState == SCROLL_STATE_SETTLING) {
             stopped();
