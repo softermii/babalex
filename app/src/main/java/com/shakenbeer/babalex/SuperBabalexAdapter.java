@@ -26,6 +26,7 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
     @Override
     public void onBindViewHolder(SuperBabalexViewHolder holder, int position) {
         holder.babalexView.setItems(data.get(position));
+        holder.babalexView.setName("" + position);
     }
 
     @Override

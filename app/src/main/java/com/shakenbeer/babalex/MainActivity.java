@@ -25,12 +25,10 @@ public class MainActivity extends AppCompatActivity {
 
     private SuperBabalexAdapter superBabalexAdapter;
 
-    private DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
 
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
         public void onAnimate(float deltaX, float alpha) {
-            Log.d("SuperBabalex", "onAnimate deltaX = " + deltaX);
             textView.setTranslationX(deltaX);
             textView.setAlpha(alpha);
         }
@@ -57,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
         superBabalex.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                Log.d("SuperBabalex", "onChildViewAttachedToWindow");
+//                Log.d("SuperBabalex", "onChildViewAttachedToWindow   " + ((BabalexView)view).getName());
             }
 
             @Override
             public void onChildViewDetachedFromWindow(View view) {
-                Log.d("SuperBabalex", "onChildViewDetachedFromWindow");
+//                Log.d("SuperBabalex", "onChildViewDetachedFromWindow " + ((BabalexView)view).getName());
             }
         });
 
@@ -70,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 Log.d("SuperBabalex", "onScrollStateChanged newState = " + newState + ", " + state(newState));
+                if (newState == SCROLL_STATE_IDLE && superBabalex.getChildCount() == 1) {
+                    ((BabalexView) superBabalex.getChildAt(0)).processTargetChild();
+                }
             }
 
             private String state(int state) {

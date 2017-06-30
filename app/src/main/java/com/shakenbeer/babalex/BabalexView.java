@@ -28,6 +28,15 @@ public class BabalexView extends RecyclerView {
     private static final int CENTER = 0;
     private static final int RIGHT = 1;
     private static final int NULL = 2595;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Retention(SOURCE)
     @IntDef({LEFT, CENTER, RIGHT, NULL})
@@ -133,6 +142,7 @@ public class BabalexView extends RecyclerView {
 
     @Override
     public void onScrolled(int dx, int dy) {
+        Log.d("BabalexView","onScrolled " + getName());
         super.onScrolled(dx, dy);
         int childCount = getChildCount();
 
@@ -155,7 +165,7 @@ public class BabalexView extends RecyclerView {
         }
     }
 
-    private void processTargetChild() {
+    public void processTargetChild() {
         targetPos = targetInThreshold();
         if (targetPos == CENTER) {
             center();
@@ -226,7 +236,6 @@ public class BabalexView extends RecyclerView {
     }
 
     private void center() {
-        Log.d("BabalexView","center");
         if (scrollListener != null) {
             if (targetChild != null) {
                 float deltaX = targetChild.getX() - padding;
