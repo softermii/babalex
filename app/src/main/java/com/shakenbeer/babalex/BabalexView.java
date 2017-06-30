@@ -2,6 +2,7 @@ package com.shakenbeer.babalex;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.annotation.Retention;
 import java.util.List;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class BabalexView extends RecyclerView {
 
@@ -19,22 +23,35 @@ public class BabalexView extends RecyclerView {
     private static final float MIN_SCALE_FACTOR = 0.2f;
     private static final float MAX_SCALE_FACTOR = 1f;
 
+
+    private static final int LEFT = -1;
+    private static final int CENTER = 0;
+    private static final int RIGHT = 1;
+    private static final int NULL = 2595;
+
+    @Retention(SOURCE)
+    @IntDef({LEFT, CENTER, RIGHT, NULL})
+    @interface TargetPos {
+
+    }
+
+
+    private int padding;
     private float pivotY;
     private float scaleFactor;
 
-    private final SnapHelper snapperCarr = new PagerSnapHelper() {
-        @Override
-        public boolean onFling(int velocityX, int velocityY) {
-            Log.d("BabalexView", "onFling");
-            return super.onFling(velocityX, velocityY);
-        }
-    };
+    private int threshold = 50;
+    private int scrollState;
+    @TargetPos
+    private int targetPos;
+
+    private final SnapHelper snapperCarr = new PagerSnapHelper();
 
     private final DefaultBabalexAdapter babalexAdapter = new DefaultBabalexAdapter();
 
     @Nullable
     private ScrollListener scrollListener;
-    private boolean scrollJustStarted = false;
+    private ViewGroup targetChild;
 
     public void setScrollListener(@Nullable ScrollListener scrollListener) {
         this.scrollListener = scrollListener;
@@ -73,16 +90,22 @@ public class BabalexView extends RecyclerView {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.d("BabalexView", "onLayout");
         super.onLayout(changed, l, t, r, b);
         if (getChildCount() > 0) {
+            Log.d("BabalexView", "onLayout getChildCount() > 0");
             ViewGroup child = (ViewGroup) getChildAt(0);
+            checkTargetCandidate(child);
             float height = child.getChildAt(0).getHeight();
             pivotY = height + 0.5f * (scaleFactor * height / (1 - scaleFactor));
+            int containerWidth = child.getWidth();
+            padding = (getWidth() - containerWidth) / 2;
             initRescale(child);
         }
     }
 
     private void initRescale(ViewGroup firstChild) {
+        Log.d("BabalexView", "initRescale scaleFactor = " + scaleFactor);
         float width = firstChild.getChildAt(0).getWidth();
         if (getChildCount() >= 3) {
             if (getChildAt(0) != null) {
@@ -113,48 +136,45 @@ public class BabalexView extends RecyclerView {
         }
     }
 
-    @Override
-    public void onScrollStateChanged(int state) {
-        super.onScrollStateChanged(state);
-        //Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
-    }
-
-    private String state(int state) {
-        if (state == SCROLL_STATE_IDLE) {
-            return "idle";
-        } else if (state == SCROLL_STATE_DRAGGING) {
-            return "dragging";
-        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
-            return "settling";
-        }
-    }
 
     @Override
     public void onScrolled(int dx, int dy) {
+        Log.d("BabalexView", "onScrolled");
         super.onScrolled(dx, dy);
-//        Log.d("BabalexView", "dx = " + dx);
-        processScroll(dx);
-
         int childCount = getChildCount();
-        int containerWidth = getChildAt(0).getWidth();
-        int padding = (getWidth() - containerWidth) / 2;
+
+        processTargetChild();
 
         for (int layoutIndex = 0; layoutIndex < childCount; layoutIndex++) {
             ViewGroup container = (ViewGroup) getChildAt(layoutIndex);
-            if (container.getX() >= 110 && container.getX() <= 210) {
-                if (scrollListener != null) {
-                    scrollListener.onAnimate(container.getX() - 160);
-                }
+            if (targetPos != CENTER) {
+                checkTargetCandidate(container);
             }
-            scaleChild(container, padding);
+            scaleChild(container);
         }
     }
 
-    private void processScroll(int dx) {
-
+    private void checkTargetCandidate(ViewGroup container) {
+        if (container.getX() >= padding - threshold && container.getX() <= padding + threshold) {
+            targetChild = container;
+            targetPos = CENTER;
+            center();
+        }
     }
 
-    private void scaleChild(ViewGroup container, int padding) {
+    private void processTargetChild() {
+        targetPos = targetInThreshold();
+        Log.d("BabalexView", "onScrolled targetPos = " + targetPos);
+        if (targetPos == CENTER) {
+            center();
+        } else if (targetPos == LEFT) {
+            left();
+        } else if (targetPos == RIGHT) {
+            right();
+        }
+    }
+
+    private void scaleChild(ViewGroup container) {
 
         View child = container.getChildAt(0);
         float rate = 0;
@@ -174,6 +194,66 @@ public class BabalexView extends RecyclerView {
         }
     }
 
+    private
+    @TargetPos
+    int targetInThreshold() {
+        if (targetChild != null) {
+            if (targetChild.getX() < padding - threshold) {
+                return LEFT;
+            }
+            if (targetChild.getX() > padding + threshold) {
+                return RIGHT;
+            }
+            return CENTER;
+        }
+        return NULL;
+    }
+
+    private void stopped() {
+        Log.d("BabalexView", "stopped");
+        if (scrollListener != null) {
+            float deltaX = 0;
+            float alpha = 1;
+            scrollListener.onAnimate(deltaX, alpha);
+        }
+    }
+
+    private void right() {
+        Log.d("BabalexView", "right");
+        if (scrollListener != null) {
+            float deltaX = threshold;
+            float alpha = 0;
+            scrollListener.onAnimate(deltaX, alpha);
+        }
+    }
+
+    private void left() {
+        Log.d("BabalexView", "left");
+        if (scrollListener != null) {
+            float deltaX = -threshold;
+            float alpha = 0;
+            scrollListener.onAnimate(deltaX, alpha);
+        }
+    }
+
+    private void center() {
+        Log.d("BabalexView", "center");
+        if (scrollListener != null) {
+            if (targetChild != null) {
+                float deltaX = targetChild.getX() - padding;
+                float alpha = 1 - Math.abs(deltaX / threshold);
+
+                ViewHolder viewHolder = findContainingViewHolder(targetChild);
+                if (viewHolder != null) {
+                    Babalex babalex = babalexAdapter.getItem(viewHolder.getAdapterPosition());
+                    scrollListener.onAnimate(deltaX, alpha, babalex);
+                } else {
+                    scrollListener.onAnimate(deltaX, alpha);
+                }
+            }
+        }
+    }
+
     private void scale(View view, float pivotX, float scale) {
         view.setPivotX(pivotX);
         view.setPivotY(pivotY);
@@ -182,9 +262,33 @@ public class BabalexView extends RecyclerView {
     }
 
     interface ScrollListener {
+        void onAnimate(float deltaX, float alpha);
 
-        void onAnimate(float v);
+        void onAnimate(float deltaX, float alpha, Babalex babalex);
+    }
 
+
+    @Override
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+        //Log.d("BabalexView", "onScrollStateChanged newState = " + state + ", " + state(state));
+
+        if (state == SCROLL_STATE_IDLE && scrollState == SCROLL_STATE_SETTLING) {
+            stopped();
+        }
+
+        scrollState = state;
+    }
+
+
+    private String state(int state) {
+        if (state == SCROLL_STATE_IDLE) {
+            return "idle";
+        } else if (state == SCROLL_STATE_DRAGGING) {
+            return "dragging";
+        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
+            return "settling";
+        }
     }
 
 }

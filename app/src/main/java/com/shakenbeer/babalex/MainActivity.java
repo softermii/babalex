@@ -29,10 +29,16 @@ public class MainActivity extends AppCompatActivity {
 
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
-        public void onAnimate(float v) {
-            Log.d("MainActivity", "onAnimate v = " + v);
-            textView.setTranslationX(v);
-            textView.setAlpha(1 - Math.abs(v) / 50);
+        public void onAnimate(float deltaX, float alpha) {
+            Log.d("SuperBabalex", "onAnimate deltaX = " + deltaX);
+            textView.setTranslationX(deltaX);
+            textView.setAlpha(alpha);
+        }
+
+        @Override
+        public void onAnimate(float deltaX, float alpha, Babalex babalex) {
+            textView.setText(babalex.getName());
+            onAnimate(deltaX, alpha);
         }
     };
 

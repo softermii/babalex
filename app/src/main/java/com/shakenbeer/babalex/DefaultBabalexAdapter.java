@@ -21,6 +21,10 @@ public class DefaultBabalexAdapter extends BabalexAdapter<DefaultBabalexAdapter.
         holder.image.setImageResource(items.get(position).getImage());
     }
 
+    public Babalex getItem(int adapterPos) {
+        return items.get(adapterPos);
+    }
+
 
     @Override
     public int getItemCount() {
