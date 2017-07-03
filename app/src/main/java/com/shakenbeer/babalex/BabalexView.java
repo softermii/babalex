@@ -142,8 +142,9 @@ public class BabalexView extends RecyclerView {
 
     @Override
     public void onScrolled(int dx, int dy) {
-        Log.d("BabalexView","onScrolled " + getName());
+        Log.d("BabalexView","onScrolled " + getName() + ", dx = " + dx + ", dy = " + dy);
         super.onScrolled(dx, dy);
+
         int childCount = getChildCount();
 
         processTargetChild();

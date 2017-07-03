@@ -25,6 +25,16 @@ public class MainActivity extends AppCompatActivity {
 
     private SuperBabalexAdapter superBabalexAdapter;
 
+    private String state(int state) {
+        if (state == SCROLL_STATE_IDLE) {
+            return "idle";
+        } else if (state == SCROLL_STATE_DRAGGING) {
+            return "dragging";
+        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
+            return "settling";
+        }
+    }
+
 
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
@@ -35,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onAnimate(float deltaX, float alpha, Babalex babalex) {
-            textView.setText(babalex.getName());
+            //Don't change babalex data while scrolling
+            if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
+                textView.setText(babalex.getName());
+            }
             onAnimate(deltaX, alpha);
         }
     };
@@ -69,17 +82,8 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 Log.d("SuperBabalex", "onScrollStateChanged newState = " + newState + ", " + state(newState));
                 if (newState == SCROLL_STATE_IDLE && superBabalex.getChildCount() == 1) {
+                    Log.d("SuperBabalex", "IDLE, ask for processTarget");
                     ((BabalexView) superBabalex.getChildAt(0)).processTargetChild();
-                }
-            }
-
-            private String state(int state) {
-                if (state == SCROLL_STATE_IDLE) {
-                    return "idle";
-                } else if (state == SCROLL_STATE_DRAGGING) {
-                    return "dragging";
-                } else /*if (state == SCROLL_STATE_SETTLING)*/ {
-                    return "settling";
                 }
             }
 
