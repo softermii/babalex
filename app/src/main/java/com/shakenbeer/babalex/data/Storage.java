@@ -1,24 +1,26 @@
-package com.shakenbeer.babalex;
+package com.shakenbeer.babalex.data;
 
+
+import com.shakenbeer.babalex.R;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Data {
+public class Storage {
 
     private static BabalexCollection animals = new BabalexCollection();
 
-    private static List<Babalex> circles = new ArrayList<>();
+    private static Category circles = new Category();
 
-    private static final List<Babalex> cats;
+    private static final Category cats;
 
-    private static final List<Babalex> dogs;
+    private static final Category dogs;
 
-    private static final List<Babalex> mouses;
+    private static final Category mouses;
 
     static {
-        cats = new LinkedList<>();
+        cats = new Category();
         cats.add(new Animal("Verginius Pontius Rufinus", R.drawable.cat_0_800px));
         cats.add(new Animal("Lucretia Claudius Rufinus", R.drawable.cat_0_800px));
         cats.add(new Animal("Priscilla Marcella Cicero", R.drawable.cat_0_800px));
@@ -29,7 +31,7 @@ public class Data {
         cats.add(new Animal("Publius Crispinus Rufina", R.drawable.cat_0_800px));
         animals.addCategory(cats);
 
-        dogs = new LinkedList<>();
+        dogs = new Category();
         dogs.add(new Animal("Wandal Brunhilde Swanahilda", R.drawable.dog_1_800px));
         dogs.add(new Animal("Ricohard Giltbert Otto", R.drawable.dog_1_800px));
         dogs.add(new Animal("Alfher Hrodger Reinald", R.drawable.dog_1_800px));
@@ -37,7 +39,7 @@ public class Data {
         dogs.add(new Animal("Raginmund Hariman Auda", R.drawable.dog_1_800px));
         animals.addCategory(dogs);
 
-        mouses = new LinkedList<>();
+        mouses = new Category();
         mouses.add(new Animal("Leontios Olympias Olympos", R.drawable.mouse_6_800px));
         mouses.add(new Animal("Charmion Kleitos Andreas", R.drawable.mouse_6_800px));
         mouses.add(new Animal("Plato Hyacinthus Cleitus", R.drawable.mouse_6_800px));
@@ -57,15 +59,15 @@ public class Data {
     }
 
 
-    public static List<Babalex> cts() {
+    public static Category cts() {
         return cats;
     }
 
-    public static List<Babalex> dogs() {
+    public static Category dogs() {
         return dogs;
     }
 
-    public static List<Babalex> mouses() {
+    public static Category mouses() {
         return mouses;
     }
 
@@ -73,7 +75,7 @@ public class Data {
         return animals;
     }
 
-    public static List<Babalex> circles() {
+    public static Category circles() {
         return circles;
     }
 }

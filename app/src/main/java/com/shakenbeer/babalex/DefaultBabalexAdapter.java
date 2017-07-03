@@ -4,6 +4,8 @@ package com.shakenbeer.babalex;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.shakenbeer.babalex.data.Babalex;
+
 import java.util.ArrayList;
 import java.util.List;
 

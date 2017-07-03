@@ -1,4 +1,4 @@
-package com.shakenbeer.babalex;
+package com.shakenbeer.babalex.data;
 
 
 public interface Babalex {

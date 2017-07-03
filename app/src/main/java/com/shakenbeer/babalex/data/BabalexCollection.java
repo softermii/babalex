@@ -1,4 +1,4 @@
-package com.shakenbeer.babalex;
+package com.shakenbeer.babalex.data;
 
 
 import java.util.ArrayList;
@@ -6,9 +6,7 @@ import java.util.List;
 
 public class BabalexCollection {
 
-    private final List<List<Babalex>> data = new ArrayList<>();
-
-    private final List<Babalex> linearData = new ArrayList<>();
+    private final List<Category> data = new ArrayList<>();
 
     private String name;
 
@@ -20,9 +18,8 @@ public class BabalexCollection {
         this.name = name;
     }
 
-    public void addCategory(List<Babalex> category) {
+    public void addCategory(Category category) {
         data.add(category);
-        linearData.addAll(category);
     }
 
     public int getCategoriesCount() {
@@ -37,10 +34,9 @@ public class BabalexCollection {
         return data.get(category).get(index);
     }
 
-    public List<Babalex> get(int category) {
-        return data.get(category);
+    public Category get(int index) {
+        return data.get(index);
     }
-
 
     public int size() {
         return data.size();

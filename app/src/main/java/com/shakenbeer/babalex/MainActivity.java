@@ -1,20 +1,14 @@
 package com.shakenbeer.babalex;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.shakenbeer.babalex.data.Babalex;
+import com.shakenbeer.babalex.data.Storage;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
@@ -62,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         superBabalex = (RecyclerView) findViewById(R.id.super_babalex);
 
-        superBabalexAdapter = new SuperBabalexAdapter(Data.animals(), horizontalScrollListener);
+        superBabalexAdapter = new SuperBabalexAdapter(Storage.animals(), horizontalScrollListener);
         superBabalex.setAdapter(superBabalexAdapter);
 
         superBabalex.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {

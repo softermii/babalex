@@ -1,5 +1,7 @@
-package com.shakenbeer.babalex;
+package com.shakenbeer.babalex.data;
 
+
+import com.shakenbeer.babalex.data.Babalex;
 
 public class Animal implements Babalex {
 

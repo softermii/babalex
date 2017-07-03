@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.shakenbeer.babalex.data.Babalex;
+import com.shakenbeer.babalex.data.Category;
+
 import java.lang.annotation.Retention;
 import java.util.List;
 
@@ -94,8 +97,8 @@ public class BabalexView extends RecyclerView {
         padding = getPaddingStart();
     }
 
-    public void setItems(List<Babalex> items) {
-        babalexAdapter.setItems(items);
+    public void setItems(Category category) {
+        babalexAdapter.setItems(category.getItems());
     }
 
     @Override
