@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onAnimate(float deltaX, float alpha, Babalex babalex) {
-            //Don't change babalex data while scrolling
+            //Don't change babalex item data while scrolling
             if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
                 textView.setText(babalex.getName());
             }

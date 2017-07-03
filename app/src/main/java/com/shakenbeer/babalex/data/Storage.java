@@ -11,7 +11,7 @@ public class Storage {
 
     private static BabalexCollection animals = new BabalexCollection();
 
-    private static Category circles = new Category();
+    private static Category circles = new Category("Circles");
 
     private static final Category cats;
 
@@ -20,7 +20,7 @@ public class Storage {
     private static final Category mouses;
 
     static {
-        cats = new Category();
+        cats = new Category("Cats");
         cats.add(new Animal("Verginius Pontius Rufinus", R.drawable.cat_0_800px));
         cats.add(new Animal("Lucretia Claudius Rufinus", R.drawable.cat_0_800px));
         cats.add(new Animal("Priscilla Marcella Cicero", R.drawable.cat_0_800px));
@@ -31,7 +31,7 @@ public class Storage {
         cats.add(new Animal("Publius Crispinus Rufina", R.drawable.cat_0_800px));
         animals.addCategory(cats);
 
-        dogs = new Category();
+        dogs = new Category("Dogs");
         dogs.add(new Animal("Wandal Brunhilde Swanahilda", R.drawable.dog_1_800px));
         dogs.add(new Animal("Ricohard Giltbert Otto", R.drawable.dog_1_800px));
         dogs.add(new Animal("Alfher Hrodger Reinald", R.drawable.dog_1_800px));
@@ -39,7 +39,7 @@ public class Storage {
         dogs.add(new Animal("Raginmund Hariman Auda", R.drawable.dog_1_800px));
         animals.addCategory(dogs);
 
-        mouses = new Category();
+        mouses = new Category("Mouses");
         mouses.add(new Animal("Leontios Olympias Olympos", R.drawable.mouse_6_800px));
         mouses.add(new Animal("Charmion Kleitos Andreas", R.drawable.mouse_6_800px));
         mouses.add(new Animal("Plato Hyacinthus Cleitus", R.drawable.mouse_6_800px));

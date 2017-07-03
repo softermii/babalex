@@ -10,6 +10,10 @@ public class Category {
 
     private List<Babalex> items = new ArrayList<>();
 
+    public Category(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
