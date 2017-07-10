@@ -11,13 +11,19 @@ public class Storage {
 
     private static BabalexCollection animals = new BabalexCollection();
 
-    private static Category circles = new Category("Circles");
+    private static Category circles;
 
     private static final Category cats;
 
     private static final Category dogs;
 
     private static final Category mouses;
+
+    private static final Category hamsters;
+
+    private static final Category ducks;
+
+    private static final Category pandas;
 
     static {
         cats = new Category("Cats");
@@ -49,13 +55,34 @@ public class Storage {
         mouses.add(new Animal("Nikomachos Pericles Antiochus", R.drawable.mouse_6_800px));
         animals.addCategory(mouses);
 
+        circles = new Category("Circles");
         circles.add(new Animal("Nahor", R.drawable.item_background_round));
         circles.add(new Animal("Kenanyahu", R.drawable.item_background_round));
         circles.add(new Animal("Jabin", R.drawable.item_background_round));
         circles.add(new Animal("Golyat", R.drawable.item_background_round));
         circles.add(new Animal("Meshach", R.drawable.item_background_round));
-
         animals.addCategory(circles);
+
+        hamsters = new Category("Hamsters");
+        hamsters.add(new Animal("Dilip Odin", R.drawable.hamster_0_800px));
+        hamsters.add(new Animal("Boniface Marko", R.drawable.hamster_0_800px));
+        hamsters.add(new Animal("Eseoghene Dwyn", R.drawable.hamster_0_800px));
+        hamsters.add(new Animal("Koralo Trey", R.drawable.hamster_0_800px));
+        animals.addCategory(hamsters);
+
+        ducks = new Category("ducks");
+        ducks.add(new Animal("Guanting Li", R.drawable.duck_0_800px));
+        ducks.add(new Animal("Xia Dong", R.drawable.duck_0_800px));
+        ducks.add(new Animal("He Shun", R.drawable.duck_0_800px));
+        ducks.add(new Animal("Xun Chun", R.drawable.duck_0_800px));
+        ducks.add(new Animal("Tai Min", R.drawable.duck_0_800px));
+        animals.addCategory(ducks);
+
+        pandas = new Category("Pandas");
+        pandas.add(new Animal("Qiang Ru", R.drawable.panda_0_800px));
+        pandas.add(new Animal("Yan Yi", R.drawable.panda_0_800px));
+        pandas.add(new Animal("Hong Wu", R.drawable.panda_0_800px));
+        animals.addCategory(pandas);
     }
 
 

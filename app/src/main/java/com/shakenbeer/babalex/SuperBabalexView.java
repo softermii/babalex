@@ -70,7 +70,10 @@ public class SuperBabalexView extends RecyclerView {
                 if (Math.abs(target.getY()) <= target.getImageHeigh()) {
                     scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeigh());
                 }
+                int currentPos = findContainingViewHolder(target).getAdapterPosition();
+                scrollListener.onScrollFinished(currentPos);
             }
+
         }
 
         scrollState = state;
@@ -82,5 +85,6 @@ public class SuperBabalexView extends RecyclerView {
 
     public interface ScrollListener {
         void onScroll(int shiftByY, int imageHeight);
+        void onScrollFinished(int currentPos);
     }
 }

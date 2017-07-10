@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.shakenbeer.babalex.data.Babalex;
+import com.shakenbeer.babalex.data.CategoryItemAnimator;
 import com.shakenbeer.babalex.data.Storage;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
@@ -57,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
             categories.setScaleX(scaleFactor);
             categories.setScaleY(scaleFactor);
         }
+
+        @Override
+        public void onScrollFinished(int superPos) {
+            categoryAdapter.setSelected(superPos);
+        }
     };
 
     private TextView textView;
@@ -97,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         categories = (RecyclerView) findViewById(R.id.categories);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         categories.setLayoutManager(layoutManager);
+        categories.setItemAnimator(new CategoryItemAnimator());
         categories.setAdapter(categoryAdapter);
 
     }

@@ -1,5 +1,6 @@
 package com.shakenbeer.babalex;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,12 @@ import java.util.List;
 
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+
+    private static final int count = 5;
+
+    private int shift = 0;
+
+    private int selected = 0;
 
     private List<Category> items = new ArrayList<>();
 
@@ -30,13 +37,37 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(CategoryViewHolder holder, int position) {
-        Category category = items.get(position);
+        int index = position + shift;
+        Category category = items.get(index);
         holder.categoryTextView.setText(category.getName());
+        if (index == selected) {
+            holder.categoryTextView.setTextColor(Color.RED);
+        } else {
+            holder.categoryTextView.setTextColor(Color.BLACK);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items.size() < count ? items.size() : count;
+    }
+
+    void setSelected(int categoryPos) {
+        selected = categoryPos;
+        updateShift();
+        notifyDataSetChanged();
+    }
+
+    private void updateShift() {
+        if (items.size() > 5) {
+            if (selected < 2) {
+                shift = 0;
+            } else if (selected < items.size() - 2) {
+                shift = selected - 2;
+            } else {
+                shift = items.size() - 5;
+            }
+        }
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
