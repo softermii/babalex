@@ -6,7 +6,7 @@
     android:background="@android:color/white"
     tools:context="com.shakenbeer.babalex.MainActivity">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/categories"
         android:layout_width="100dp"
         android:layout_height="wrap_content"

@@ -16,7 +16,6 @@ import com.shakenbeer.babalex.data.Babalex;
 import com.shakenbeer.babalex.data.Category;
 
 import java.lang.annotation.Retention;
-import java.util.List;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -50,6 +49,7 @@ public class BabalexView extends RecyclerView {
     private int padding;
     private float pivotY;
     private float scaleFactor;
+    private int imageHeight;
 
     private int threshold = 50;
     private int scrollState;
@@ -58,7 +58,7 @@ public class BabalexView extends RecyclerView {
 
     private final SnapHelper snapperCarr = new PagerSnapHelper();
 
-    private final DefaultBabalexAdapter babalexAdapter = new DefaultBabalexAdapter();
+    private final BabalexAdapter babalexAdapter = new BabalexAdapter();
 
     @Nullable
     private ScrollListener scrollListener;
@@ -80,6 +80,10 @@ public class BabalexView extends RecyclerView {
     public BabalexView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs);
+    }
+
+    public int getImageHeigh() {
+        return imageHeight;
     }
 
     private void init(Context context, @Nullable AttributeSet attrs) {
@@ -105,10 +109,11 @@ public class BabalexView extends RecyclerView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if (getChildCount() > 0) {
-            ViewGroup child = (ViewGroup) getChildAt(0);
-            float height = child.getChildAt(0).getHeight();
-            pivotY = height + 0.5f * (scaleFactor * height / (1 - scaleFactor));
-            initRescale(child);
+            ViewGroup container = (ViewGroup) getChildAt(0);
+            View image = container.getChildAt(0);
+            imageHeight = image.getHeight();
+            pivotY = imageHeight + 0.5f * (scaleFactor * imageHeight / (1 - scaleFactor));
+            initRescale(container);
         }
     }
 
@@ -157,7 +162,7 @@ public class BabalexView extends RecyclerView {
             if (targetPos != CENTER) {
                 checkTargetCandidate(container);
             }
-            scaleChild(container);
+            scaleImage(container);
         }
     }
 
@@ -180,9 +185,9 @@ public class BabalexView extends RecyclerView {
         }
     }
 
-    private void scaleChild(ViewGroup container) {
+    private void scaleImage(ViewGroup container) {
 
-        View child = container.getChildAt(0);
+        View image = container.getChildAt(0);
         float rate = 0;
 
         if (container.getLeft() <= padding) {
@@ -191,12 +196,12 @@ public class BabalexView extends RecyclerView {
             } else {
                 rate = 1;
             }
-            scale(child, container.getWidth(), 1 - rate * (1 - scaleFactor));
+            scale(image, container.getWidth(), 1 - rate * (1 - scaleFactor));
         } else {
             if (container.getLeft() <= getWidth() - padding) {
                 rate = (getWidth() - padding - container.getLeft()) * 1f / container.getWidth();
             }
-            scale(child, 0, scaleFactor + rate * (1 - scaleFactor));
+            scale(image, 0, scaleFactor + rate * (1 - scaleFactor));
         }
     }
 
@@ -219,7 +224,7 @@ public class BabalexView extends RecyclerView {
         if (scrollListener != null) {
             float deltaX = 0;
             float alpha = 1;
-            scrollListener.onAnimate(deltaX, alpha);
+            scrollListener.onScroll(deltaX, alpha);
         }
     }
 
@@ -227,7 +232,7 @@ public class BabalexView extends RecyclerView {
         if (scrollListener != null) {
             float deltaX = threshold;
             float alpha = 0;
-            scrollListener.onAnimate(deltaX, alpha);
+            scrollListener.onScroll(deltaX, alpha);
         }
     }
 
@@ -235,7 +240,7 @@ public class BabalexView extends RecyclerView {
         if (scrollListener != null) {
             float deltaX = -threshold;
             float alpha = 0;
-            scrollListener.onAnimate(deltaX, alpha);
+            scrollListener.onScroll(deltaX, alpha);
         }
     }
 
@@ -248,9 +253,9 @@ public class BabalexView extends RecyclerView {
                 ViewHolder viewHolder = findContainingViewHolder(targetChild);
                 if (viewHolder != null) {
                     Babalex babalex = babalexAdapter.getItem(viewHolder.getAdapterPosition());
-                    scrollListener.onAnimate(deltaX, alpha, babalex);
+                    scrollListener.onScroll(deltaX, alpha, babalex);
                 } else {
-                    scrollListener.onAnimate(deltaX, alpha);
+                    scrollListener.onScroll(deltaX, alpha);
                 }
             }
         }
@@ -264,9 +269,9 @@ public class BabalexView extends RecyclerView {
     }
 
     interface ScrollListener {
-        void onAnimate(float deltaX, float alpha);
+        void onScroll(float shiftByX, float alpha);
 
-        void onAnimate(float deltaX, float alpha, Babalex babalex);
+        void onScroll(float shiftByX, float alpha, Babalex babalex);
     }
 
 

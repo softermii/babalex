@@ -42,4 +42,7 @@ public class BabalexCollection {
         return data.size();
     }
 
+    public List<Category> getCategories() {
+        return data;
+    }
 }

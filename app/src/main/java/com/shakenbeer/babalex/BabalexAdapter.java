@@ -6,21 +6,52 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 
+import com.shakenbeer.babalex.data.Babalex;
 
-public abstract class BabalexAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> {
 
 
     @Override
-    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BabalexHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View container = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_babalex, parent, false);
-        ViewStub viewStub = (ViewStub) container.findViewById(R.id.stub);
-        viewStub.setLayoutResource(getLayoutResId());
-        viewStub.inflate();
-        return createHolder(container);
+        return new BabalexHolder(container);
     }
 
-    public abstract int getLayoutResId();
+    private List<Babalex> items = new ArrayList<>();
 
-    public abstract VH createHolder(View child);
+    public void setItems(List<Babalex> items) {
+        this.items = items;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBindViewHolder(BabalexHolder holder, int position) {
+        holder.image.setImageResource(items.get(position).getImage());
+    }
+
+    public Babalex getItem(int adapterPos) {
+        return items.get(adapterPos);
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+
+    public static class BabalexHolder extends RecyclerView.ViewHolder {
+
+        SquareImageView image;
+
+        public BabalexHolder(View itemView) {
+            super(itemView);
+            image = (SquareImageView) itemView.findViewById(R.id.image);
+        }
+    }
 }

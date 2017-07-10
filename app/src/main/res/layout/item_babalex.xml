@@ -3,11 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ViewStub
-        android:id="@+id/stub"
+    <com.shakenbeer.babalex.SquareImageView
+        android:id="@+id/image"
         android:layout_gravity="top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inflatedId="@+id/image" />
+        android:layout_height="wrap_content" />
 
 </FrameLayout>
