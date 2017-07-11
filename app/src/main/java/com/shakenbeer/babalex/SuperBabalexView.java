@@ -15,6 +15,8 @@ public class SuperBabalexView extends RecyclerView {
     private final SnapHelper snapperCarr = new PagerSnapHelper();
 
     private BabalexView target;
+    private int changeCategoryEdge = 0;
+    private int firstChildY = 0;
 
     @Nullable
     private ScrollListener scrollListener;
@@ -45,19 +47,33 @@ public class SuperBabalexView extends RecyclerView {
         super.onLayout(changed, l, t, r, b);
         BabalexView babalexView = (BabalexView) getChildAt(0);
         Log.d("SuperBabalexView", "onLayout image = " + babalexView.getImageHeigh() + "");
-
+        changeCategoryEdge = (int) (-babalexView.getImageHeigh());
     }
 
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
-        int childCount = getChildCount();
-        if (target == null) target =  (BabalexView) getChildAt(0);
-        Log.d("SuperBabalexView", "dy = " + dy + ", childCount = " + childCount + ", first child y = " + target.getY());
+        if (target == null) target = (BabalexView) getChildAt(0);
+
         if (scrollListener != null) {
             if (Math.abs(target.getY()) <= target.getImageHeigh()) {
                 scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeigh());
             }
+
+            BabalexView firstChild = (BabalexView) getChildAt(0);
+
+            int firstChildCategory = findContainingViewHolder(firstChild).getAdapterPosition();
+            //moving up
+            if (firstChildY > changeCategoryEdge && firstChild.getY() < changeCategoryEdge) {
+                scrollListener.categoryChanged(firstChildCategory + 1);
+
+            }
+            //moving down
+            else if (firstChildY < changeCategoryEdge && firstChild.getY() > changeCategoryEdge) {
+                scrollListener.categoryChanged(firstChildCategory);
+            }
+
+            firstChildY = (int) firstChild.getY();
         }
     }
 
@@ -70,12 +86,8 @@ public class SuperBabalexView extends RecyclerView {
                 if (Math.abs(target.getY()) <= target.getImageHeigh()) {
                     scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeigh());
                 }
-                int currentPos = findContainingViewHolder(target).getAdapterPosition();
-                scrollListener.onScrollFinished(currentPos);
             }
-
         }
-
         scrollState = state;
     }
 
@@ -85,6 +97,7 @@ public class SuperBabalexView extends RecyclerView {
 
     public interface ScrollListener {
         void onScroll(int shiftByY, int imageHeight);
-        void onScrollFinished(int currentPos);
+
+        void categoryChanged(int activePos);
     }
 }

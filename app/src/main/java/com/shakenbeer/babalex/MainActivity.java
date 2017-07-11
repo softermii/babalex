@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onScrollFinished(int superPos) {
-            categoryAdapter.setSelected(superPos);
+        public void categoryChanged(int activePos) {
+            categoryAdapter.setSelected(activePos);
         }
     };
 
@@ -88,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int childCount = superBabalex.getChildCount();
-                BabalexView babalexView = (BabalexView) superBabalex.getChildAt(0);
-                Log.d("SuperBabalex", "dy = " + dy + ", childCount = " + childCount + ", first child y = " + babalexView.getY());
+//                int childCount = superBabalex.getChildCount();
+//                BabalexView babalexView = (BabalexView) superBabalex.getChildAt(0);
+//                Log.d("SuperBabalex", "dy = " + dy + ", childCount = " + childCount + ", first child y = " + babalexView.getY());
             }
         });
 
