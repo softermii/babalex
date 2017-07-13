@@ -47,7 +47,7 @@ public class SuperBabalexView extends RecyclerView {
         super.onLayout(changed, l, t, r, b);
         BabalexView babalexView = (BabalexView) getChildAt(0);
         Log.d("SuperBabalexView", "onLayout image = " + babalexView.getImageHeigh() + "");
-        changeCategoryEdge = (int) (-babalexView.getImageHeigh());
+        changeCategoryEdge = (int) (-0.8f * babalexView.getImageHeigh());
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.shakenbeer.babalex;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.shakenbeer.babalex.data.Category;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -23,8 +25,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     private List<Category> items = new ArrayList<>();
 
+    private List<Category> toDisplay = new LinkedList<>();
+
     public void setItems(List<Category> items) {
         this.items = items;
+        for (int i = 0; i < getItemCount(); i++) {
+            toDisplay.add(items.get(i));
+        }
         notifyDataSetChanged();
     }
 
@@ -37,10 +44,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(CategoryViewHolder holder, int position) {
-        int index = position + shift;
-        Category category = items.get(index);
+        Category category = toDisplay.get(position);
         holder.categoryTextView.setText(category.getName());
-        if (index == selected) {
+        if (position == selected - shift) {
             holder.categoryTextView.setTextColor(Color.RED);
         } else {
             holder.categoryTextView.setTextColor(Color.BLACK);
@@ -52,23 +58,37 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return items.size() < count ? items.size() : count;
     }
 
-    void setSelected(int categoryPos) {
-        selected = categoryPos;
-        updateShift();
-        notifyDataSetChanged();
-    }
-
-    private void updateShift() {
+    void setSelected(int posInItems) {
+        int prevSelected = selected;
+        selected = posInItems;
         if (items.size() > 5) {
-            if (selected < 2) {
-                shift = 0;
-            } else if (selected < items.size() - 2) {
-                shift = selected - 2;
-            } else {
-                shift = items.size() - 5;
+            if (selected > prevSelected && selected > 2 && selected < items.size() - 2) {
+                scrollForward();
+            } else if (selected < prevSelected && selected > 1 && selected < items.size() - 3) {
+                scrollBackward();
             }
         }
+        notifyItemChanged(selected - shift - 1);
+        notifyItemChanged(selected - shift);
+        notifyItemChanged(selected - shift + 1);
     }
+
+    private void scrollBackward() {
+        shift--;
+        toDisplay.remove(4);
+        notifyItemRemoved(4);
+        toDisplay.add(0, items.get(selected - 2));
+        notifyItemInserted(0);
+    }
+
+    private void scrollForward() {
+        shift++;
+        toDisplay.remove(0);
+        notifyItemRemoved(0);
+        toDisplay.add(items.get(selected + 2));
+        notifyItemInserted(4);
+    }
+
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
 
