@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onScroll(int shiftByY, int imageHeight) {
-            categories.setTranslationY(shiftByY * (0.6f - (float) categories.getHeight() / imageHeight));
+            categories.setTranslationY(shiftByY * (0.75f - (float) categories.getHeight() / imageHeight));
             float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
             categories.setScaleX(scaleFactor);
             categories.setScaleY(scaleFactor);
