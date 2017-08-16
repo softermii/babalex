@@ -16,7 +16,7 @@ public class SuperBabalexView extends RecyclerView {
 
     private BabalexView target;
     private int changeCategoryEdge = 0;
-    private int firstChildY = 0;
+    private int prevFirstChildY = 0;
 
     @Nullable
     private ScrollListener scrollListener;
@@ -64,22 +64,33 @@ public class SuperBabalexView extends RecyclerView {
 
             int firstChildCategory = findContainingViewHolder(firstChild).getAdapterPosition();
             //moving up
-            if (firstChildY > changeCategoryEdge && firstChild.getY() < changeCategoryEdge) {
+            if (prevFirstChildY > changeCategoryEdge && firstChild.getY() < changeCategoryEdge) {
                 scrollListener.categoryChanged(firstChildCategory + 1);
 
             }
             //moving down
-            else if (firstChildY < changeCategoryEdge && firstChild.getY() > changeCategoryEdge) {
+            else if (prevFirstChildY < changeCategoryEdge && firstChild.getY() > changeCategoryEdge) {
                 scrollListener.categoryChanged(firstChildCategory);
             }
 
-            firstChildY = (int) firstChild.getY();
+            prevFirstChildY = (int) firstChild.getY();
+        }
+    }
+
+    private String state(int state) {
+        if (state == SCROLL_STATE_IDLE) {
+            return "idle";
+        } else if (state == SCROLL_STATE_DRAGGING) {
+            return "dragging";
+        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
+            return "settling";
         }
     }
 
     @Override
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
+        Log.d("SuperBabalexView" , state(state));
         if (state == SCROLL_STATE_IDLE && scrollState != SCROLL_STATE_DRAGGING) {
             target = (BabalexView) getChildAt(0);
             if (scrollListener != null) {
