@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.shakenbeer.babalex.data.Babalex;
@@ -18,54 +17,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SuperBabalexView superBabalex;
     private SuperBabalexAdapter superBabalexAdapter;
-
-    private RecyclerView categories;
-    private CategoryAdapter categoryAdapter;
-
-    private String state(int state) {
-        if (state == SCROLL_STATE_IDLE) {
-            return "idle";
-        } else if (state == SCROLL_STATE_DRAGGING) {
-            return "dragging";
-        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
-            return "settling";
-        }
-    }
-
-    private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
-        @Override
-        public void onScroll(float shiftByX, float alpha) {
-            textView.setTranslationX(shiftByX);
-            textView.setAlpha(alpha);
-        }
-
-        @Override
-        public void onScroll(float shiftByX, float alpha, Babalex babalex) {
-            //Don't change babalex item data while scrolling
-            if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
-                textView.setText(babalex.getName());
-            }
-            onScroll(shiftByX, alpha);
-        }
-    };
-
-    private SuperBabalexView.ScrollListener verticalScrollListener = new SuperBabalexView.ScrollListener() {
-
-        @Override
-        public void onScroll(int shiftByY, int imageHeight) {
-            categories.setTranslationY(shiftByY * (0.75f - (float) categories.getHeight() / imageHeight));
-            float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
-            categories.setScaleX(scaleFactor);
-            categories.setScaleY(scaleFactor);
-        }
-
-        @Override
-        public void categoryChanged(int activePos) {
-            categoryAdapter.setSelected(activePos);
-        }
-    };
-
     private TextView textView;
+    private RecyclerView categoriesRecyclerView;
+    private CategoryAdapter categoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,12 +54,62 @@ public class MainActivity extends AppCompatActivity {
 
         categoryAdapter = new CategoryAdapter();
         categoryAdapter.setItems(Storage.animals().getCategories());
-        categories = (RecyclerView) findViewById(R.id.categories);
+        categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        categories.setLayoutManager(layoutManager);
-        categories.setItemAnimator(new CategoryItemAnimator());
-        categories.setAdapter(categoryAdapter);
+        categoriesRecyclerView.setLayoutManager(layoutManager);
+        categoriesRecyclerView.setItemAnimator(new CategoryItemAnimator());
+        categoriesRecyclerView.setAdapter(categoryAdapter);
 
     }
+
+    private String state(int state) {
+        if (state == SCROLL_STATE_IDLE) {
+            return "idle";
+        } else if (state == SCROLL_STATE_DRAGGING) {
+            return "dragging";
+        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
+            return "settling";
+        }
+    }
+
+    private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
+        @Override
+        public void onScroll(float shiftByX, float alpha) {
+            textView.setTranslationX(shiftByX);
+            textView.setAlpha(alpha);
+        }
+
+        @Override
+        public void onScroll(float shiftByX, float alpha, Babalex babalex) {
+            //Don't change babalex item data while scrolling
+            if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
+                textView.setText(babalex.getName());
+            }
+            onScroll(shiftByX, alpha);
+        }
+    };
+
+    private SuperBabalexView.ScrollListener verticalScrollListener = new SuperBabalexView.ScrollListener() {
+
+        @Override
+        public void onScroll(int shiftByY, int imageHeight) {
+            /*
+                0.4f stands for the distance from the edge of the screen we want the categories to be shifted
+                In the end of swipe shiftByY will be equal to imageHeight, therefore for acceleration of the animation
+                I used this dependency:  ((shiftByY * 1.2f) / imageHeight).
+                1.2f is a little adjustment for the animation acceleration.
+             */
+            float translationY = shiftByY * 0.4f + ((shiftByY * 1.2f) / imageHeight);
+            categoriesRecyclerView.setTranslationY(translationY);
+            float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
+            categoriesRecyclerView.setScaleX(scaleFactor);
+            categoriesRecyclerView.setScaleY(scaleFactor);
+        }
+
+        @Override
+        public void categoryChanged(int activePos) {
+            categoryAdapter.setSelected(activePos);
+        }
+    };
 
 }
