@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private SuperBabalexView superBabalex;
     private SuperBabalexAdapter superBabalexAdapter;
     private TextView textView;
+    private CategoriesRecyclerViewManager categoriesManager;
     private RecyclerView categoriesRecyclerView;
     private CategoryAdapter categoryAdapter;
 
@@ -52,11 +53,12 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textView);
 
-        categoryAdapter = new CategoryAdapter();
-        categoryAdapter.setItems(Storage.animals().getCategories());
+        categoryAdapter = new CategoryAdapter(Storage.animals().getCategories());
         categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        categoriesRecyclerView.setLayoutManager(layoutManager);
+        categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
+                Storage.animals().getCategoriesCount());
+        categoriesRecyclerView.setLayoutManager(
+                new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         categoriesRecyclerView.setItemAnimator(new CategoryItemAnimator());
         categoriesRecyclerView.setAdapter(categoryAdapter);
 
@@ -107,8 +109,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void categoryChanged(int activePos) {
-            categoryAdapter.setSelected(activePos);
+        public void categoryChanged(int activePosition) {
+            categoryAdapter.setSelected(activePosition);
+            categoriesManager.onCategoryChanged(activePosition);
         }
     };
 
