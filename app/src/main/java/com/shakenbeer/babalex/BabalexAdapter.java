@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 
 import com.shakenbeer.babalex.data.Babalex;
 
@@ -31,7 +30,7 @@ public class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexH
 
     @Override
     public void onBindViewHolder(BabalexHolder holder, int position) {
-        holder.image.setImageResource(items.get(position).getImage());
+        holder.image.setImageResource(items.get(position).getImageRes());
     }
 
     public Babalex getItem(int adapterPos) {
