@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private CategoriesRecyclerViewManager categoriesManager;
     private RecyclerView categoriesRecyclerView;
     private CategoryAdapter categoryAdapter;
+    private SmoothScrollLinearLayoutManager scrollLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.textView);
 
         categoryAdapter = new CategoryAdapter(Storage.animals().getCategories());
+        scrollLinearLayoutManager = new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
         categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
                 Storage.animals().getCategoriesCount());
-        categoriesRecyclerView.setLayoutManager(
-                new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
         categoriesRecyclerView.setItemAnimator(new CategoryItemAnimator());
         categoriesRecyclerView.setAdapter(categoryAdapter);
 
@@ -110,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void categoryChanged(int activePosition) {
-            categoryAdapter.setSelected(activePosition);
             categoriesManager.onCategoryChanged(activePosition);
+            categoryAdapter.setSelected(activePosition);
         }
     };
 

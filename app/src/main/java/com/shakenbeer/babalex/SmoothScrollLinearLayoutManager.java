@@ -11,24 +11,23 @@ import android.util.DisplayMetrics;
  * Created by onos on 18.08.17.
  */
 
-public class SmoothScrollLinearLayoutManager extends LinearLayoutManager {
+class SmoothScrollLinearLayoutManager extends LinearLayoutManager {
 
-    private static final float MILLISECONDS_PER_INCH = 300f;
-    private Context mContext;
+    private static final float MILLISECONDS_PER_INCH = 650f;
 
-    public SmoothScrollLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
-        super(context,orientation,reverseLayout);
-        mContext = context;
+    SmoothScrollLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
+        super(context, orientation, reverseLayout);
     }
 
     @Override
     public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state,
                                        int position) {
-        RecyclerView.SmoothScroller smoothScroller = new TopSnappedSmoothScroller(recyclerView.getContext()){
+        RecyclerView.SmoothScroller smoothScroller = new TopSnappedSmoothScroller(recyclerView.getContext()) {
             //This controls the direction in which smoothScroll looks for your view
             @Override
             public PointF computeScrollVectorForPosition(int targetPosition) {
-                return new PointF(0, 1);
+                return SmoothScrollLinearLayoutManager.this
+                        .computeScrollVectorForPosition(targetPosition);
             }
 
             //This returns the milliseconds it takes to scroll one pixel.
@@ -41,9 +40,8 @@ public class SmoothScrollLinearLayoutManager extends LinearLayoutManager {
         startSmoothScroll(smoothScroller);
     }
 
-
     private class TopSnappedSmoothScroller extends LinearSmoothScroller {
-        public TopSnappedSmoothScroller(Context context) {
+        TopSnappedSmoothScroller(Context context) {
             super(context);
 
         }
@@ -56,7 +54,7 @@ public class SmoothScrollLinearLayoutManager extends LinearLayoutManager {
 
         @Override
         protected int getVerticalSnapPreference() {
-            return SNAP_TO_START;
+            return SNAP_TO_ANY;
         }
     }
 

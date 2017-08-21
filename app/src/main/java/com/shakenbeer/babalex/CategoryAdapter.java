@@ -2,7 +2,6 @@ package com.shakenbeer.babalex;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import java.util.List;
 class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private static final String TAG = "CategoryAdapter";
-    private int selected = 0;
+    private int selected;
     private List<Category> items = new ArrayList<>();
 
     CategoryAdapter(List<Category> categories) {
@@ -55,7 +54,6 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewH
             notifyItemRangeChanged(selected, 2);
         }
         selected = activePosition;
-//        notifyDataSetChanged();
     }
 
 
