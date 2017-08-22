@@ -1,10 +1,11 @@
 package com.shakenbeer.babalex;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shakenbeer.babalex.data.Babalex;
@@ -18,7 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
     private SuperBabalexView superBabalex;
     private SuperBabalexAdapter superBabalexAdapter;
-
+    private TextView babalexItemTitle;
+    private TextView babalexItemDescription;
+    private TextView babalexItemPrice;
+    private TextView babalexCurrencySign;
+    private LinearLayout babalexItemDataLayout;
     private RecyclerView categories;
     private CategoryAdapter categoryAdapter;
 
@@ -35,15 +40,15 @@ public class MainActivity extends AppCompatActivity {
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
         public void onScroll(float shiftByX, float alpha) {
-            textView.setTranslationX(shiftByX);
-            textView.setAlpha(alpha);
+            babalexItemDataLayout.setTranslationX(shiftByX);
+            babalexItemDataLayout.setAlpha(alpha);
         }
 
         @Override
         public void onScroll(float shiftByX, float alpha, Babalex babalex) {
             //Don't change babalex item data while scrolling
             if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
-                textView.setText(babalex.getName());
+                babalexItemTitle.setText(babalex.getName());
             }
             onScroll(shiftByX, alpha);
         }
@@ -65,12 +70,11 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private TextView textView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
         superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
 
@@ -96,7 +100,18 @@ public class MainActivity extends AppCompatActivity {
 
         superBabalex.setScrollListener(verticalScrollListener);
 
-        textView = (TextView) findViewById(R.id.textView);
+        babalexItemDataLayout = (LinearLayout) findViewById(R.id.babalex_item_data_layout);
+        babalexItemTitle = (TextView) findViewById(R.id.babalex_item_title);
+        babalexItemDescription = (TextView) findViewById(R.id.babalex_item_description);
+        babalexItemPrice = (TextView) findViewById(R.id.babalex_item_price);
+        babalexCurrencySign = (TextView) findViewById(R.id.currency_sign);
+
+        Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
+        Typeface textRegularTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
+        babalexItemTitle.setTypeface(titleTypeface, Typeface.BOLD);
+        babalexItemDescription.setTypeface(textRegularTypeface);
+        babalexItemPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
+        babalexCurrencySign.setTypeface(textRegularTypeface);
 
         categoryAdapter = new CategoryAdapter();
         categoryAdapter.setItems(Storage.animals().getCategories());

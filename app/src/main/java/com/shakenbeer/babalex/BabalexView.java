@@ -112,7 +112,7 @@ public class BabalexView extends RecyclerView {
             ViewGroup container = (ViewGroup) getChildAt(0);
             View image = container.getChildAt(0);
             imageHeight = image.getHeight();
-            pivotY = imageHeight + 0.5f * (scaleFactor * imageHeight / (1 - scaleFactor));
+            pivotY = imageHeight - (scaleFactor * imageHeight / (1 - scaleFactor));
             initRescale(container);
         }
     }
@@ -150,7 +150,7 @@ public class BabalexView extends RecyclerView {
 
     @Override
     public void onScrolled(int dx, int dy) {
-        Log.d("BabalexView","onScrolled " + getName() + ", dx = " + dx + ", dy = " + dy);
+        Log.d("BabalexView", "onScrolled " + getName() + ", dx = " + dx + ", dy = " + dy);
         super.onScrolled(dx, dy);
 
         int childCount = getChildCount();
