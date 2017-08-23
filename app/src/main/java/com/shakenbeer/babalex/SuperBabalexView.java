@@ -46,8 +46,8 @@ public class SuperBabalexView extends RecyclerView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         BabalexView babalexView = (BabalexView) getChildAt(0);
-        Log.d("SuperBabalexView", "onLayout image = " + babalexView.getImageHeigh() + "");
-        changeCategoryEdge = (int) (-0.8f * babalexView.getImageHeigh());
+        Log.d("SuperBabalexView", "onLayout image = " + babalexView.getImageHeight() + "");
+        changeCategoryEdge = (int) (-0.8f * babalexView.getImageHeight());
     }
 
     @Override
@@ -56,8 +56,8 @@ public class SuperBabalexView extends RecyclerView {
         if (target == null) target = (BabalexView) getChildAt(0);
 
         if (scrollListener != null) {
-            if (Math.abs(target.getY()) <= target.getImageHeigh()) {
-                scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeigh());
+            if (Math.abs(target.getY()) <= target.getImageHeight()) {
+                scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeight());
             }
 
             BabalexView firstChild = (BabalexView) getChildAt(0);
@@ -90,12 +90,12 @@ public class SuperBabalexView extends RecyclerView {
     @Override
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
-        Log.d("SuperBabalexView" , state(state));
+        Log.d("SuperBabalexView", state(state));
         if (state == SCROLL_STATE_IDLE && scrollState != SCROLL_STATE_DRAGGING) {
             target = (BabalexView) getChildAt(0);
             if (scrollListener != null) {
-                if (Math.abs(target.getY()) <= target.getImageHeigh()) {
-                    scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeigh());
+                if (Math.abs(target.getY()) <= target.getImageHeight()) {
+                    scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeight());
                 }
             }
         }

@@ -10,9 +10,8 @@ import com.shakenbeer.babalex.data.BabalexCollection;
 
 public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapter.SuperBabalexViewHolder> {
 
-    BabalexCollection data;
-
-    BabalexView.ScrollListener scrollListener;
+    private BabalexCollection data;
+    private BabalexView.ScrollListener scrollListener;
 
     public SuperBabalexAdapter(BabalexCollection data, BabalexView.ScrollListener scrollListener) {
         this.data = data;
@@ -29,6 +28,7 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
     public void onBindViewHolder(SuperBabalexViewHolder holder, int position) {
         holder.babalexView.setItems(data.get(position));
         holder.babalexView.setName("" + position);
+        holder.babalexView.setBackgroundResource(data.get(position).getBackgroundResId());
     }
 
     @Override

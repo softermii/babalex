@@ -23,7 +23,7 @@ public class BabalexView extends RecyclerView {
 
     private static final float DEFAULT_SCALE_FACTOR = 0.55f;
     private static final float MIN_SCALE_FACTOR = 0.2f;
-    private static final float MAX_SCALE_FACTOR = 1f;
+    private static final float MAX_SCALE_FACTOR = 0.99f;
 
 
     private static final int LEFT = -1;
@@ -82,7 +82,7 @@ public class BabalexView extends RecyclerView {
         init(context, attrs);
     }
 
-    public int getImageHeigh() {
+    public int getImageHeight() {
         return imageHeight;
     }
 
