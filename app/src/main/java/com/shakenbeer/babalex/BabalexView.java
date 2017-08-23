@@ -20,6 +20,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class BabalexView extends RecyclerView {
 
+    private static final String TAG = "BabalexView";
     private static final float DEFAULT_SCALE_FACTOR = 0.55f;
     private static final float MIN_SCALE_FACTOR = 0.2f;
     private static final float MAX_SCALE_FACTOR = 0.99f;
@@ -124,26 +125,26 @@ public class BabalexView extends RecyclerView {
             if (getChildAt(0) != null) {
                 ViewGroup container = (ViewGroup) getChildAt(0);
                 View child = container.getChildAt(0);
-                scale(child, width, scaleFactor);
+                scale(child, Math.abs(container.getX()), width, scaleFactor);
             }
             if (getChildAt(2) != null) {
                 ViewGroup container = (ViewGroup) getChildAt(2);
                 View child = container.getChildAt(0);
-                scale(child, 0, scaleFactor);
+                scale(child, Math.abs(container.getX() - (container.getWidth() / 2)), 0, scaleFactor);
             }
         } else {
             if (getChildAt(0) != null) {
                 ViewGroup container = (ViewGroup) getChildAt(0);
                 if (container.getLeft() < 0) {
                     View child = container.getChildAt(0);
-                    scale(child, width, scaleFactor);
+                    scale(child, Math.abs(container.getX()), width, scaleFactor);
                 }
             }
             if (getChildAt(1) != null) {
                 ViewGroup container = (ViewGroup) getChildAt(1);
                 if (container.getRight() > getWidth()) {
                     View child = container.getChildAt(0);
-                    scale(child, 0, scaleFactor);
+                    scale(child, Math.abs(container.getX() - (container.getWidth() / 2)), 0, scaleFactor);
                 }
             }
         }
@@ -195,12 +196,12 @@ public class BabalexView extends RecyclerView {
             } else {
                 rate = 1;
             }
-            scale(image, (-container.getX()), container.getWidth(), 1 - rate * (1 - scaleFactor));
+            scale(image, Math.abs(container.getX()), container.getWidth(), 1 - rate * (1 - scaleFactor));
         } else {
             if (container.getLeft() <= getWidth() - padding) {
                 rate = (getWidth() - padding - container.getLeft()) * 1f / container.getWidth();
             }
-            scale(image, container.getX(), 0, scaleFactor + rate * (1 - scaleFactor));
+            scale(image, Math.abs(container.getX() - (container.getWidth() / 2)), 0, scaleFactor + rate * (1 - scaleFactor));
         }
     }
 
@@ -260,16 +261,9 @@ public class BabalexView extends RecyclerView {
         }
     }
 
-    private void scale(View view, float pivotX, float scale) {
-        view.setPivotX(pivotX);
-        view.setPivotY(pivotY);
-        view.setScaleX(scale);
-        view.setScaleY(scale);
-    }
-
-    private void scale(View view, float containerScrollX, float pivotX, float scale) {
+    private void scale(View view, float scrollDistanceX, float pivotX, float scale) {
         float pivotAbs = Math.abs(pivotY - (imageHeight / 2));
-        float endPivotY = (imageHeight / 2) - (pivotAbs * (containerScrollX * 1.25f / imageWidth));
+        float endPivotY = (imageHeight / 2) - (pivotAbs * (scrollDistanceX * 1.25f / imageWidth));
         view.setPivotX(pivotX);
         view.setPivotY(endPivotY);
         view.setScaleX(scale);

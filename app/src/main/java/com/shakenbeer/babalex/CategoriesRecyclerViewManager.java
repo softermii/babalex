@@ -1,7 +1,6 @@
 package com.shakenbeer.babalex;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 /**
  * Created by onos on 18.08.17.

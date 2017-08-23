@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
         superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
 
@@ -59,7 +60,18 @@ public class MainActivity extends AppCompatActivity {
 
         superBabalex.setScrollListener(verticalScrollListener);
 
-        textView = (TextView) findViewById(R.id.textView);
+        babalexItemDataLayout = (LinearLayout) findViewById(R.id.babalex_item_data_layout);
+        babalexItemTitle = (TextView) findViewById(R.id.babalex_item_title);
+        babalexItemDescription = (TextView) findViewById(R.id.babalex_item_description);
+        babalexItemPrice = (TextView) findViewById(R.id.babalex_item_price);
+        babalexCurrencySign = (TextView) findViewById(R.id.currency_sign);
+
+        Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
+        Typeface textRegularTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
+        babalexItemTitle.setTypeface(titleTypeface, Typeface.BOLD);
+        babalexItemDescription.setTypeface(textRegularTypeface);
+        babalexItemPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
+        babalexCurrencySign.setTypeface(textRegularTypeface);
 
         categoryAdapter = new CategoryAdapter(Storage.animals().getCategories());
         scrollLinearLayoutManager = new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -122,58 +134,5 @@ public class MainActivity extends AppCompatActivity {
             categoryAdapter.setSelected(activePosition);
         }
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
-
-        superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
-
-        superBabalexAdapter = new SuperBabalexAdapter(Storage.animals(), horizontalScrollListener);
-        superBabalex.setAdapter(superBabalexAdapter);
-
-        superBabalex.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == SCROLL_STATE_IDLE && superBabalex.getChildCount() == 1) {
-                    ((BabalexView) superBabalex.getChildAt(0)).processTargetChild();
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-//                int childCount = superBabalex.getChildCount();
-//                BabalexView babalexView = (BabalexView) superBabalex.getChildAt(0);
-//                Log.d("SuperBabalex", "dy = " + dy + ", childCount = " + childCount + ", first child y = " + babalexView.getY());
-            }
-        });
-
-        superBabalex.setScrollListener(verticalScrollListener);
-
-        babalexItemDataLayout = (LinearLayout) findViewById(R.id.babalex_item_data_layout);
-        babalexItemTitle = (TextView) findViewById(R.id.babalex_item_title);
-        babalexItemDescription = (TextView) findViewById(R.id.babalex_item_description);
-        babalexItemPrice = (TextView) findViewById(R.id.babalex_item_price);
-        babalexCurrencySign = (TextView) findViewById(R.id.currency_sign);
-
-        Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
-        Typeface textRegularTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
-        babalexItemTitle.setTypeface(titleTypeface, Typeface.BOLD);
-        babalexItemDescription.setTypeface(textRegularTypeface);
-        babalexItemPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
-        babalexCurrencySign.setTypeface(textRegularTypeface);
-
-        categoryAdapter = new CategoryAdapter();
-        categoryAdapter.setItems(Storage.animals().getCategories());
-        categories = (RecyclerView) findViewById(R.id.categories);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        categories.setLayoutManager(layoutManager);
-        categories.setItemAnimator(new CategoryItemAnimator());
-        categories.setAdapter(categoryAdapter);
-
-    }
 
 }
