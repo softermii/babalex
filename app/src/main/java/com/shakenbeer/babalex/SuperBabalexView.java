@@ -106,7 +106,7 @@ public class SuperBabalexView extends RecyclerView {
         this.scrollListener = scrollListener;
     }
 
-    public interface ScrollListener {
+    interface ScrollListener {
         void onScroll(int shiftByY, int imageHeight);
 
         void categoryChanged(int activePos);
