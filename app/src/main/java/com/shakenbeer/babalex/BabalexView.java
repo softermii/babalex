@@ -8,7 +8,6 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -50,6 +49,7 @@ public class BabalexView extends RecyclerView {
     private float pivotY;
     private float scaleFactor;
     private int imageHeight;
+    private int imageWidth;
 
     private int threshold = 50;
     private int scrollState;
@@ -112,6 +112,7 @@ public class BabalexView extends RecyclerView {
             ViewGroup container = (ViewGroup) getChildAt(0);
             View image = container.getChildAt(0);
             imageHeight = image.getHeight();
+            imageWidth = image.getWidth();
             pivotY = imageHeight - (scaleFactor * imageHeight / (1 - scaleFactor));
             initRescale(container);
         }
@@ -150,7 +151,6 @@ public class BabalexView extends RecyclerView {
 
     @Override
     public void onScrolled(int dx, int dy) {
-        Log.d("BabalexView", "onScrolled " + getName() + ", dx = " + dx + ", dy = " + dy);
         super.onScrolled(dx, dy);
 
         int childCount = getChildCount();
@@ -186,7 +186,6 @@ public class BabalexView extends RecyclerView {
     }
 
     private void scaleImage(ViewGroup container) {
-
         View image = container.getChildAt(0);
         float rate = 0;
 
@@ -196,12 +195,12 @@ public class BabalexView extends RecyclerView {
             } else {
                 rate = 1;
             }
-            scale(image, container.getWidth(), 1 - rate * (1 - scaleFactor));
+            scale(image, (-container.getX()), container.getWidth(), 1 - rate * (1 - scaleFactor));
         } else {
             if (container.getLeft() <= getWidth() - padding) {
                 rate = (getWidth() - padding - container.getLeft()) * 1f / container.getWidth();
             }
-            scale(image, 0, scaleFactor + rate * (1 - scaleFactor));
+            scale(image, container.getX(), 0, scaleFactor + rate * (1 - scaleFactor));
         }
     }
 
@@ -264,6 +263,15 @@ public class BabalexView extends RecyclerView {
     private void scale(View view, float pivotX, float scale) {
         view.setPivotX(pivotX);
         view.setPivotY(pivotY);
+        view.setScaleX(scale);
+        view.setScaleY(scale);
+    }
+
+    private void scale(View view, float containerScrollX, float pivotX, float scale) {
+        float pivotAbs = Math.abs(pivotY - (imageHeight / 2));
+        float endPivotY = (imageHeight / 2) - (pivotAbs * (containerScrollX * 1.25f / imageWidth));
+        view.setPivotX(pivotX);
+        view.setPivotY(endPivotY);
         view.setScaleX(scale);
         view.setScaleY(scale);
     }
