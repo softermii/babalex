@@ -1,6 +1,9 @@
 package com.shakenbeer.babalex;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +20,15 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewH
 
     private static final String TAG = "CategoryAdapter";
     private int selected;
+    private Context context;
     private List<Category> items = new ArrayList<>();
 
-    CategoryAdapter(List<Category> categories) {
+    private final Typeface gillSansLight;
+
+    CategoryAdapter(Context context, List<Category> categories) {
+        this.context = context;
         this.items = categories;
+        gillSansLight = Typeface.createFromAsset(context.getAssets(), "GillSansLight.ttf");
     }
 
     @Override
@@ -35,9 +43,15 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewH
         Category category = items.get(position);
         holder.categoryTextView.setText(category.getName());
         if (position == selected) {
+            holder.categoryTextView.setTypeface(gillSansLight, Typeface.BOLD);
+            holder.categoryTextView.setTextSize(24);
             holder.categoryTextView.setTextColor(Color.RED);
+            holder.categoryTextView.setPaintFlags(holder.categoryTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         } else {
+            holder.categoryTextView.setTypeface(gillSansLight, Typeface.NORMAL);
+            holder.categoryTextView.setTextSize(18);
             holder.categoryTextView.setTextColor(Color.BLACK);
+            holder.categoryTextView.setPaintFlags(0);
         }
     }
 

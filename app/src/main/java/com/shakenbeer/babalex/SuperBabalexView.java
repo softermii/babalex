@@ -13,6 +13,7 @@ import android.util.Log;
 public class SuperBabalexView extends RecyclerView {
 
     private final SnapHelper snapperCarr = new PagerSnapHelper();
+    private static final String TAG = "SuperBabalexView";
 
     private BabalexView target;
     private int changeCategoryEdge = 0;
@@ -46,8 +47,8 @@ public class SuperBabalexView extends RecyclerView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         BabalexView babalexView = (BabalexView) getChildAt(0);
-        Log.d("SuperBabalexView", "onLayout image = " + babalexView.getImageHeight() + "");
-        changeCategoryEdge = (int) (-0.8f * babalexView.getImageHeight());
+        changeCategoryEdge = (int) (-0.4f * babalexView.getHeight());
+        Log.d(TAG, "onLayout image = " + babalexView.getImageHeight() + ", changeCategoryEdge = " + changeCategoryEdge);
     }
 
     @Override
@@ -63,13 +64,12 @@ public class SuperBabalexView extends RecyclerView {
             BabalexView firstChild = (BabalexView) getChildAt(0);
 
             int firstChildCategory = findContainingViewHolder(firstChild).getAdapterPosition();
-            //moving up
-            if (prevFirstChildY > changeCategoryEdge && firstChild.getY() < changeCategoryEdge) {
-                scrollListener.categoryChanged(firstChildCategory + 1);
-
-            }
             //moving down
-            else if (prevFirstChildY < changeCategoryEdge && firstChild.getY() > changeCategoryEdge) {
+            if (dy > 0 && prevFirstChildY > changeCategoryEdge && firstChild.getY() * 1.1f < changeCategoryEdge) {
+                scrollListener.categoryChanged(firstChildCategory + 1);
+            }
+            //moving up
+            else if (dy < 0 && prevFirstChildY < changeCategoryEdge && firstChild.getY() * 0.9f > changeCategoryEdge) {
                 scrollListener.categoryChanged(firstChildCategory);
             }
 

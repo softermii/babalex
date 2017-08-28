@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private SuperBabalexView superBabalex;
     private SuperBabalexAdapter superBabalexAdapter;
     private TextView babalexItemTitle;
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         babalexItemPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
         babalexCurrencySign.setTypeface(textRegularTypeface);
 
-        categoryAdapter = new CategoryAdapter(Storage.animals().getCategories());
+        categoryAdapter = new CategoryAdapter(this, Storage.animals().getCategories());
         scrollLinearLayoutManager = new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
         categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
@@ -121,8 +123,9 @@ public class MainActivity extends AppCompatActivity {
                 I used this dependency:  ((shiftByY * 1.2f) / imageHeight).
                 1.2f is a little adjustment for the animation acceleration.
              */
-            float translationY = shiftByY * 0.4f + ((shiftByY * 1.2f) / imageHeight);
+            float translationY = shiftByY * .7f + ((shiftByY * 1.2f) / imageHeight);
             categoriesRecyclerView.setTranslationY(translationY);
+            categoriesRecyclerView.setAlpha(shiftByY * 1.08f / imageHeight);
             float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
             categoriesRecyclerView.setScaleX(scaleFactor);
             categoriesRecyclerView.setScaleY(scaleFactor);
@@ -130,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void categoryChanged(int activePosition) {
+            Log.d(TAG, "categoryChanged: " + activePosition);
             categoriesManager.onCategoryChanged(activePosition);
             categoryAdapter.setSelected(activePosition);
         }

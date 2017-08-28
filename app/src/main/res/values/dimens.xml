@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="categories_recycler_view_height">100dp</dimen>
-    <dimen name="category_item_recycler_view_height">20dp</dimen>
+    <dimen name="categories_recycler_view_height">135dp</dimen>
+    <dimen name="category_item_recycler_view_height">27dp</dimen>
     <dimen name="superbabalex_padding_right">62dp</dimen>
     <dimen name="superbabalex_padding_left">62dp</dimen>
 </resources>
