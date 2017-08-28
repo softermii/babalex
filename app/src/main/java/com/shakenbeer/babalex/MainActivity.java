@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shakenbeer.babalex.data.Babalex;
-import com.shakenbeer.babalex.data.CategoryItemAnimator;
 import com.shakenbeer.babalex.data.Storage;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
@@ -81,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
                 Storage.animals().getCategoriesCount());
         categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
-        categoriesRecyclerView.setItemAnimator(new CategoryItemAnimator());
         categoriesRecyclerView.setAdapter(categoryAdapter);
 
     }

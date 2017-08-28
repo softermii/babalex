@@ -59,6 +59,10 @@ public class SuperBabalexView extends RecyclerView {
         if (scrollListener != null) {
             if (Math.abs(target.getY()) <= target.getImageHeight()) {
                 scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeight());
+            } else if (scrollState == SCROLL_STATE_SETTLING) {
+                scrollListener.onScroll((int) Math.abs(getHeight() + target.getY()),
+                        // getY() returns a negative number here, since target is above the screen
+                        target.getImageHeight());
             }
 
             BabalexView firstChild = (BabalexView) getChildAt(0);
@@ -91,14 +95,13 @@ public class SuperBabalexView extends RecyclerView {
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
         Log.d("SuperBabalexView", state(state));
-        if (state == SCROLL_STATE_IDLE && scrollState != SCROLL_STATE_DRAGGING) {
-            target = (BabalexView) getChildAt(0);
-            if (scrollListener != null) {
-                if (Math.abs(target.getY()) <= target.getImageHeight()) {
-                    scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeight());
-                }
+        target = (BabalexView) getChildAt(0);
+        if (scrollListener != null) {
+            if (Math.abs(target.getY()) <= target.getImageHeight()) {
+                scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeight());
             }
         }
+
         scrollState = state;
     }
 
