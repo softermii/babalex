@@ -6,13 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shakenbeer.babalex.data.Babalex;
 import com.shakenbeer.babalex.data.Storage;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView babalexItemDescription;
     private TextView babalexItemPrice;
     private TextView babalexCurrencySign;
+    private Button addToCartButton;
+    private TextView nextCategory;
     private LinearLayout babalexItemDataLayout;
-    private RecyclerView categories;
     private CategoriesRecyclerViewManager categoriesManager;
     private RecyclerView categoriesRecyclerView;
     private CategoryAdapter categoryAdapter;
@@ -53,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                int childCount = superBabalex.getChildCount();
-//                BabalexView babalexView = (BabalexView) superBabalex.getChildAt(0);
-//                Log.d("SuperBabalex", "dy = " + dy + ", childCount = " + childCount + ", first child y = " + babalexView.getY());
             }
         });
 
@@ -66,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         babalexItemDescription = (TextView) findViewById(R.id.babalex_item_description);
         babalexItemPrice = (TextView) findViewById(R.id.babalex_item_price);
         babalexCurrencySign = (TextView) findViewById(R.id.currency_sign);
+        addToCartButton = (Button) findViewById(R.id.add_to_cart_button);
+        nextCategory = (TextView) findViewById(R.id.swipe_up_text_view);
 
         Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
         Typeface textRegularTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
@@ -81,16 +82,18 @@ public class MainActivity extends AppCompatActivity {
                 Storage.animals().getCategoriesCount());
         categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
         categoriesRecyclerView.setAdapter(categoryAdapter);
-
+        showNextCategoryText();
     }
 
-    private String state(int state) {
-        if (state == SCROLL_STATE_IDLE) {
-            return "idle";
-        } else if (state == SCROLL_STATE_DRAGGING) {
-            return "dragging";
-        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
-            return "settling";
+    private void showNextCategoryText() {
+        int size = categoryAdapter.getItemCount();
+        int selected = categoryAdapter.getSelectedPosition();
+        if (selected < size - 1) {
+            nextCategory.setVisibility(View.VISIBLE);
+            nextCategory.setText(Storage.animals().get(selected + 1).getName());
+        } else {
+            // hide next category text if the last item is selected
+            nextCategory.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -124,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
             float translationY = shiftByY * .7f + ((shiftByY * 1.2f) / imageHeight);
             categoriesRecyclerView.setTranslationY(translationY);
             categoriesRecyclerView.setAlpha(shiftByY * 1.08f / imageHeight);
+            babalexItemDataLayout.setAlpha(1f - (shiftByY * 3f / imageHeight));
+            addToCartButton.setAlpha(1f - (shiftByY * 3f / imageHeight));
+            nextCategory.setAlpha(1f - (shiftByY * 3f / imageHeight));
             float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
             categoriesRecyclerView.setScaleX(scaleFactor);
             categoriesRecyclerView.setScaleY(scaleFactor);
@@ -134,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "categoryChanged: " + activePosition);
             categoriesManager.onCategoryChanged(activePosition);
             categoryAdapter.setSelected(activePosition);
+            showNextCategoryText();
         }
     };
 

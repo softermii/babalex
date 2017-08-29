@@ -10,20 +10,20 @@
         android:id="@+id/categories"
         android:layout_width="100dp"
         android:layout_height="@dimen/categories_recycler_view_height"
-        android:clickable="false"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:clickable="false" />
 
     <LinearLayout
         android:id="@+id/babalex_item_data_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="154dp"
         android:layout_marginEnd="34dp"
         android:layout_marginStart="34dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical">1
 
         <TextView
             android:id="@+id/babalex_item_title"
@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:gravity="center"
+            android:maxLines="2"
             android:textColor="@color/candyItemTitleRed"
             android:textSize="32sp"
             tools:text="Christine Cupcake" />
@@ -82,7 +83,8 @@
         android:id="@+id/super_babalex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@drawable/background_cupcakes" />
+        tools:background="@drawable/background_cupcakes"
+        tools:visibility="invisible" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -90,21 +92,23 @@
 
         <ImageButton
             android:id="@+id/user_profile_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentTop="true"
             android:layout_margin="16dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
             android:src="@drawable/ic_user" />
 
         <ImageButton
             android:id="@+id/cart_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_margin="16dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
             android:src="@drawable/ic_shopping_basket" />
 
         <Button
@@ -123,12 +127,14 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/add_to_cart_button"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="16dp"
-            android:drawablePadding="5dp"
+            android:layout_marginBottom="8dp"
+            android:drawablePadding="2dp"
             android:drawableTop="@drawable/ic_swipe_up"
             android:gravity="center"
-            android:text="MACARONS"
-            android:textColor="@color/regularText" />
+            android:textAllCaps="true"
+            android:textColor="@color/regularText"
+            android:textSize="14sp"
+            tools:text="MACARONS" />
 
     </RelativeLayout>
 

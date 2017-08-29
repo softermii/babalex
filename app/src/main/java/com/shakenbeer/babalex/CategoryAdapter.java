@@ -53,6 +53,10 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewH
         return items.size();
     }
 
+    int getSelectedPosition() {
+        return selected;
+    }
+
     void setSelected(int activePosition) {
         // update views only on selected range
         if (activePosition < selected) {
