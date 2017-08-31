@@ -11,16 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> {
+class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> {
 
-
-    private OnItemSelectedCallback onItemSelectedCallback;
+    private static final String TAG = "BabalexAdapter";
+    private final OnItemSelectedCallback onItemSelectedCallback;
 
     interface OnItemSelectedCallback {
         void onItemSelected(int position, Babalex item, View imageView);
     }
 
-    public BabalexAdapter(OnItemSelectedCallback onItemSelectedCallback) {
+    BabalexAdapter(OnItemSelectedCallback onItemSelectedCallback) {
         this.onItemSelectedCallback = onItemSelectedCallback;
     }
 
@@ -33,19 +33,20 @@ public class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexH
 
     private List<Babalex> items = new ArrayList<>();
 
-    public void setItems(List<Babalex> items) {
+    void setItems(List<Babalex> items) {
         this.items = items;
         notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(final BabalexHolder holder, final int position) {
+    public void onBindViewHolder(final BabalexHolder holder, int position) {
         holder.image.setImageResource(items.get(position).getImageRes());
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemSelectedCallback != null) {
-                    onItemSelectedCallback.onItemSelected(position, items.get(position), holder.image);
+                    int pos = holder.getAdapterPosition();
+                    onItemSelectedCallback.onItemSelected(pos, items.get(pos), holder.image);
                 }
             }
         });
@@ -62,11 +63,11 @@ public class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexH
     }
 
 
-    public static class BabalexHolder extends RecyclerView.ViewHolder {
+    class BabalexHolder extends RecyclerView.ViewHolder {
 
         SquareImageView image;
 
-        public BabalexHolder(View itemView) {
+        BabalexHolder(View itemView) {
             super(itemView);
             image = (SquareImageView) itemView.findViewById(R.id.image);
         }

@@ -2,8 +2,10 @@ package com.shakenbeer.babalex;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -25,8 +27,10 @@ public class ExtendedBabalexActivity extends AppCompatActivity {
 
         String babalexItemName = getIntent().getExtras().getString(MainActivity.SELECTED_ITEM_NAME);
         int babalexItemImageRes = getIntent().getExtras().getInt(MainActivity.SELECTED_ITEM_IMAGE_RES);
+        int babalexBackgroundRes = getIntent().getExtras().getInt(MainActivity.SELECTED_ITEM_CATEGORY_BACKGROUND);
 
-
+        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.babalex_extended_screen_layout);
+        layout.setBackgroundResource(babalexBackgroundRes);
         SquareImageView imageView = (SquareImageView) findViewById(R.id.image);
         Button addToCartButton = (Button) findViewById(R.id.add_to_cart_button);
         TextView title = (TextView) findViewById(R.id.babalex_item_title);
@@ -64,6 +68,12 @@ public class ExtendedBabalexActivity extends AppCompatActivity {
         imageView.setImageResource(babalexItemImageRes);
         title.setText(babalexItemName);
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                supportFinishAfterTransition();
+            }
+        });
 
     }
 

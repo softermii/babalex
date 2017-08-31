@@ -10,6 +10,7 @@ import com.shakenbeer.babalex.data.BabalexCollection;
 
 public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapter.SuperBabalexViewHolder> {
 
+    private static final String TAG = "SuperBabalexAdapter";
     private BabalexCollection data;
     private BabalexView.ScrollListener scrollListener;
     private BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback;

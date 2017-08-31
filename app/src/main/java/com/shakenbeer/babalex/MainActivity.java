@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String SELECTED_ITEM_NAME = "selected_item_name";
     public static final String SELECTED_ITEM_IMAGE_RES = "selected_item_image_res";
+    public static final String SELECTED_ITEM_CATEGORY_BACKGROUND = "selected_item_category_background";
     private static final String TAG = "MainActivity";
     private SuperBabalexView superBabalex;
     private SuperBabalexAdapter superBabalexAdapter;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
 
-        superBabalexAdapter = new SuperBabalexAdapter(Storage.animals(), horizontalScrollListener,
+        superBabalexAdapter = new SuperBabalexAdapter(Storage.sweets(), horizontalScrollListener,
                 onItemSelectedCallback);
         superBabalex.setAdapter(superBabalexAdapter);
 
@@ -85,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
         nextCategory.setTypeface(textRegularTypeface, Typeface.BOLD);
         addToCartButton.setTypeface(textRegularTypeface, Typeface.BOLD);
 
-        categoryAdapter = new CategoryAdapter(this, Storage.animals().getCategories());
+        categoryAdapter = new CategoryAdapter(this, Storage.sweets().getCategories());
         SmoothScrollLinearLayoutManager scrollLinearLayoutManager =
                 new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
         categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
-                Storage.animals().getCategoriesCount());
+                Storage.sweets().getCategoriesCount());
         categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
         categoriesRecyclerView.setAdapter(categoryAdapter);
         showNextCategoryText();
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         int selected = categoryAdapter.getSelectedPosition();
         if (selected < size - 1) {
             nextCategory.setVisibility(View.VISIBLE);
-            nextCategory.setText(Storage.animals().get(selected + 1).getName());
+            nextCategory.setText(Storage.sweets().get(selected + 1).getName());
         } else {
             // hide next category text if the last item is selected
             nextCategory.setVisibility(View.INVISIBLE);
@@ -162,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString(SELECTED_ITEM_NAME, item.getName());
             bundle.putInt(SELECTED_ITEM_IMAGE_RES, item.getImageRes());
+            bundle.putInt(SELECTED_ITEM_CATEGORY_BACKGROUND,
+                    Storage.sweets().get(categoryAdapter.getSelectedPosition()).getBackgroundResId()); // temporary solution
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 ActivityOptionsCompat options = ActivityOptionsCompat.
