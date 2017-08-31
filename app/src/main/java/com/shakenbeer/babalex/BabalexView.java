@@ -39,8 +39,8 @@ public class BabalexView extends RecyclerView {
     private int padding;
     private float pivotY;
     private float scaleFactor;
-    private int imageHeight;
-    private int imageWidth;
+    private int imageMaxHeight;
+    private int imageMaxWidth;
 
     private int threshold = 50;
     private int scrollState;
@@ -85,8 +85,8 @@ public class BabalexView extends RecyclerView {
         this.scrollListener = scrollListener;
     }
 
-    public int getImageHeight() {
-        return imageHeight;
+    public int getImageMaxHeight() {
+        return imageMaxHeight;
     }
 
     private void init(Context context, @Nullable AttributeSet attrs) {
@@ -109,9 +109,9 @@ public class BabalexView extends RecyclerView {
         if (getChildCount() > 0) {
             ViewGroup container = (ViewGroup) getChildAt(0);
             View image = container.getChildAt(0);
-            imageHeight = image.getHeight();
-            imageWidth = image.getWidth();
-            pivotY = imageHeight - (scaleFactor * imageHeight / (1 - scaleFactor));
+            imageMaxHeight = image.getHeight();
+            imageMaxWidth = image.getWidth();
+            pivotY = imageMaxHeight - (scaleFactor * imageMaxHeight / (1 - scaleFactor));
             initRescale(container);
         }
     }
@@ -259,12 +259,17 @@ public class BabalexView extends RecyclerView {
     }
 
     private void scale(View view, float scrollDistanceX, float pivotX, float scale) {
-        float pivotAbs = Math.abs(pivotY - (imageHeight / 2));
-        float endPivotY = (imageHeight / 2) - (pivotAbs * (scrollDistanceX * 1.25f / imageWidth));
+        if (isLayoutMeasured()) return;
+        float pivotAbs = Math.abs(pivotY - (imageMaxHeight / 2));
+        float endPivotY = (imageMaxHeight / 2) - (pivotAbs * (scrollDistanceX * 1.25f / imageMaxWidth));
         view.setPivotX(pivotX);
         view.setPivotY(endPivotY);
         view.setScaleX(scale);
         view.setScaleY(scale);
+    }
+
+    private boolean isLayoutMeasured() {
+        return imageMaxHeight == 0 || imageMaxWidth == 0;
     }
 
     interface ScrollListener {

@@ -1,6 +1,7 @@
 package com.shakenbeer.babalex;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,12 @@ class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> 
                     int pos = holder.getAdapterPosition();
                     onItemSelectedCallback.onItemSelected(pos, items.get(pos), holder.image);
                 }
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("BABALEX_DEBUG",  "holder.image.isClickable() = " + holder.image.isClickable() );
             }
         });
     }

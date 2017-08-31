@@ -48,7 +48,7 @@ public class SuperBabalexView extends RecyclerView {
         super.onLayout(changed, l, t, r, b);
         BabalexView babalexView = (BabalexView) getChildAt(0);
         changeCategoryEdge = (int) (-0.4f * babalexView.getHeight());
-        Log.d(TAG, "onLayout image = " + babalexView.getImageHeight() + ", changeCategoryEdge = " + changeCategoryEdge);
+        Log.d(TAG, "onLayout image = " + babalexView.getImageMaxHeight() + ", changeCategoryEdge = " + changeCategoryEdge);
     }
 
     @Override
@@ -57,12 +57,12 @@ public class SuperBabalexView extends RecyclerView {
         if (target == null) target = (BabalexView) getChildAt(0);
 
         if (scrollListener != null) {
-            if (Math.abs(target.getY()) <= target.getImageHeight()) {
-                scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeight());
+            if (Math.abs(target.getY()) <= target.getImageMaxHeight()) {
+                scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageMaxHeight());
             } else if (scrollState == SCROLL_STATE_SETTLING) {
                 scrollListener.onScroll((int) Math.abs(getHeight() + target.getY()),
                         // getY() returns a negative number here, since target is above the screen
-                        target.getImageHeight());
+                        target.getImageMaxHeight());
             }
 
             BabalexView firstChild = (BabalexView) getChildAt(0);
@@ -97,8 +97,8 @@ public class SuperBabalexView extends RecyclerView {
         Log.d("SuperBabalexView", state(state));
         target = (BabalexView) getChildAt(0);
         if (scrollListener != null) {
-            if (Math.abs(target.getY()) <= target.getImageHeight()) {
-                scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageHeight());
+            if (Math.abs(target.getY()) <= target.getImageMaxHeight()) {
+                scrollListener.onScroll((int) Math.abs(target.getY()), target.getImageMaxHeight());
             }
         }
 
