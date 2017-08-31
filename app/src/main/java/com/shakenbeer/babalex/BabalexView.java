@@ -20,31 +20,21 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class BabalexView extends RecyclerView {
 
+    @Retention(SOURCE)
+    @IntDef({LEFT, CENTER, RIGHT, NULL})
+    @interface TargetPos {
+    }
+
     private static final String TAG = "BabalexView";
     private static final float DEFAULT_SCALE_FACTOR = 0.55f;
     private static final float MIN_SCALE_FACTOR = 0.2f;
     private static final float MAX_SCALE_FACTOR = 0.99f;
-
 
     private static final int LEFT = -1;
     private static final int CENTER = 0;
     private static final int RIGHT = 1;
     private static final int NULL = 2595;
     private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Retention(SOURCE)
-    @IntDef({LEFT, CENTER, RIGHT, NULL})
-    @interface TargetPos {
-
-    }
 
     private int padding;
     private float pivotY;
@@ -58,16 +48,10 @@ public class BabalexView extends RecyclerView {
     private int targetPos;
 
     private final SnapHelper snapperCarr = new PagerSnapHelper();
-
-    private final BabalexAdapter babalexAdapter = new BabalexAdapter();
-
+    private BabalexAdapter babalexAdapter;
     @Nullable
     private ScrollListener scrollListener;
     private ViewGroup targetChild;
-
-    public void setScrollListener(@Nullable ScrollListener scrollListener) {
-        this.scrollListener = scrollListener;
-    }
 
     public BabalexView(Context context) {
         super(context);
@@ -83,6 +67,24 @@ public class BabalexView extends RecyclerView {
         init(context, attrs);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void createAndSetAdapter(Category category, BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback) {
+        babalexAdapter = new BabalexAdapter(onItemSelectedCallback);
+        babalexAdapter.setItems(category.getItems());
+        setAdapter(babalexAdapter);
+    }
+
+    public void setScrollListener(@Nullable ScrollListener scrollListener) {
+        this.scrollListener = scrollListener;
+    }
+
     public int getImageHeight() {
         return imageHeight;
     }
@@ -92,7 +94,6 @@ public class BabalexView extends RecyclerView {
         setLayoutManager(new BabalexLayoutManager(context));
         snapperCarr.attachToRecyclerView(this);
 
-        setAdapter(babalexAdapter);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.BabalexView, 0, 0);
 
         scaleFactor = a.getFloat(R.styleable.BabalexView_scaleFactor, DEFAULT_SCALE_FACTOR);
@@ -100,10 +101,6 @@ public class BabalexView extends RecyclerView {
         if (scaleFactor > MAX_SCALE_FACTOR) scaleFactor = MAX_SCALE_FACTOR;
 
         padding = getPaddingStart();
-    }
-
-    public void setItems(Category category) {
-        babalexAdapter.setItems(category.getItems());
     }
 
     @Override
@@ -298,5 +295,4 @@ public class BabalexView extends RecyclerView {
             return "settling";
         }
     }
-
 }

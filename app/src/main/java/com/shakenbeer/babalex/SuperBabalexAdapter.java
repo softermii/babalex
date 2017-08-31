@@ -12,10 +12,12 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
 
     private BabalexCollection data;
     private BabalexView.ScrollListener scrollListener;
+    private BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback;
 
-    public SuperBabalexAdapter(BabalexCollection data, BabalexView.ScrollListener scrollListener) {
+    public SuperBabalexAdapter(BabalexCollection data, BabalexView.ScrollListener scrollListener, BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback) {
         this.data = data;
         this.scrollListener = scrollListener;
+        this.onItemSelectedCallback = onItemSelectedCallback;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
 
     @Override
     public void onBindViewHolder(SuperBabalexViewHolder holder, int position) {
-        holder.babalexView.setItems(data.get(position));
+        holder.babalexView.createAndSetAdapter(data.get(position), onItemSelectedCallback);
         holder.babalexView.setName("" + position);
         holder.babalexView.setBackgroundResource(data.get(position).getBackgroundResId());
     }

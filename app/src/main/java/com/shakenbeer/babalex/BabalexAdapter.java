@@ -14,6 +14,16 @@ import java.util.List;
 public class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> {
 
 
+    private OnItemSelectedCallback onItemSelectedCallback;
+
+    interface OnItemSelectedCallback {
+        void onItemSelected(int position, Babalex item, View imageView);
+    }
+
+    public BabalexAdapter(OnItemSelectedCallback onItemSelectedCallback) {
+        this.onItemSelectedCallback = onItemSelectedCallback;
+    }
+
     @Override
     public BabalexHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View container = LayoutInflater.from(parent.getContext())
@@ -29,8 +39,16 @@ public class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexH
     }
 
     @Override
-    public void onBindViewHolder(BabalexHolder holder, int position) {
+    public void onBindViewHolder(final BabalexHolder holder, final int position) {
         holder.image.setImageResource(items.get(position).getImageRes());
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemSelectedCallback != null) {
+                    onItemSelectedCallback.onItemSelected(position, items.get(position), holder.image);
+                }
+            }
+        });
     }
 
     public Babalex getItem(int adapterPos) {

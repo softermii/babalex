@@ -1,7 +1,10 @@
 package com.shakenbeer.babalex;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +21,8 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String SELECTED_ITEM_NAME = "selected_item_name";
+    public static final String SELECTED_ITEM_IMAGE_RES = "selected_item_image_res";
     private static final String TAG = "MainActivity";
     private SuperBabalexView superBabalex;
     private SuperBabalexAdapter superBabalexAdapter;
@@ -31,17 +36,19 @@ public class MainActivity extends AppCompatActivity {
     private CategoriesRecyclerViewManager categoriesManager;
     private RecyclerView categoriesRecyclerView;
     private CategoryAdapter categoryAdapter;
-    private SmoothScrollLinearLayoutManager scrollLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.hide();
 
         superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
 
-        superBabalexAdapter = new SuperBabalexAdapter(Storage.animals(), horizontalScrollListener);
+        superBabalexAdapter = new SuperBabalexAdapter(Storage.animals(), horizontalScrollListener,
+                onItemSelectedCallback);
         superBabalex.setAdapter(superBabalexAdapter);
 
         superBabalex.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -69,14 +76,18 @@ public class MainActivity extends AppCompatActivity {
         nextCategory = (TextView) findViewById(R.id.swipe_up_text_view);
 
         Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
-        Typeface textRegularTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
+        Typeface textRegularLightTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
+        Typeface textRegularTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSans.ttf");
         babalexItemTitle.setTypeface(titleTypeface, Typeface.BOLD);
-        babalexItemDescription.setTypeface(textRegularTypeface);
+        babalexItemDescription.setTypeface(textRegularLightTypeface);
+        babalexCurrencySign.setTypeface(textRegularLightTypeface);
         babalexItemPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
-        babalexCurrencySign.setTypeface(textRegularTypeface);
+        nextCategory.setTypeface(textRegularTypeface, Typeface.BOLD);
+        addToCartButton.setTypeface(textRegularTypeface, Typeface.BOLD);
 
         categoryAdapter = new CategoryAdapter(this, Storage.animals().getCategories());
-        scrollLinearLayoutManager = new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        SmoothScrollLinearLayoutManager scrollLinearLayoutManager =
+                new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
         categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
                 Storage.animals().getCategoriesCount());
@@ -141,6 +152,26 @@ public class MainActivity extends AppCompatActivity {
             categoriesManager.onCategoryChanged(activePosition);
             categoryAdapter.setSelected(activePosition);
             showNextCategoryText();
+        }
+    };
+
+    private final BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback = new BabalexAdapter.OnItemSelectedCallback() {
+        @Override
+        public void onItemSelected(int position, Babalex item, View imageView) {
+            Intent intent = new Intent(MainActivity.this, ExtendedBabalexActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(SELECTED_ITEM_NAME, item.getName());
+            bundle.putInt(SELECTED_ITEM_IMAGE_RES, item.getImageRes());
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(MainActivity.this, imageView, imageView.getTransitionName());
+                intent.putExtras(bundle);
+                startActivity(intent, options.toBundle());
+            } else {
+                startActivity(intent, bundle);
+            }
+
         }
     };
 
