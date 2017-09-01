@@ -7,6 +7,15 @@
     tools:context="com.shakenbeer.babalex.MainActivity">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/background_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        tools:background="@drawable/macaron_background" />
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/categories"
         android:layout_width="100dp"
         android:layout_height="@dimen/categories_recycler_view_height"
@@ -83,7 +92,6 @@
         android:id="@+id/super_babalex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@drawable/background_cupcakes"
         tools:visibility="invisible" />
 
     <RelativeLayout

@@ -31,7 +31,6 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
     public void onBindViewHolder(SuperBabalexViewHolder holder, int position) {
         holder.babalexView.createAndSetAdapter(data.get(position), onItemSelectedCallback);
         holder.babalexView.setName("" + position);
-        holder.babalexView.setBackgroundResource(data.get(position).getBackgroundResId());
     }
 
     @Override

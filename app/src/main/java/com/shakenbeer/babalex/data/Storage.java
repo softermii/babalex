@@ -12,7 +12,7 @@ public class Storage {
     private static final Category macaron;
 
     static {
-        cupcakes = new Category("Cupcakes", R.drawable.background_cupcakes);
+        cupcakes = new Category("Cupcakes", R.drawable.cupcakes_background);
         cupcakes.add(new Candy("Verginius Pontius Rufinus", R.drawable.cupcake1));
         cupcakes.add(new Candy("Lucretia Claudius Rufinus", R.drawable.cupcake2));
         cupcakes.add(new Candy("Priscilla Marcella Cicero", R.drawable.cupcake3));
@@ -20,7 +20,7 @@ public class Storage {
         cupcakes.add(new Candy("Maximinus Aulus Loukios", R.drawable.cupcake5));
         sweets.addCategory(cupcakes);
 
-        macaron = new Category("Macarons", R.drawable.background_macarons);
+        macaron = new Category("Macarons", R.drawable.macaron_background);
         macaron.add(new Candy("Wandal Brunhilde Swanahilda", R.drawable.macaron1));
         macaron.add(new Candy("Ricohard Giltbert Otto", R.drawable.macaron2));
         macaron.add(new Candy("Alfher Hrodger Reinald", R.drawable.macaron3));

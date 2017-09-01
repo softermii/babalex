@@ -21,12 +21,20 @@ public class SuperBabalexView extends RecyclerView {
 
     @Nullable
     private ScrollListener scrollListener;
+    private ParallaxBackgroundScrollListener backgroundScrollListener;
     private int scrollState = SCROLL_STATE_SETTLING;
 
     public SuperBabalexView(Context context) {
         super(context);
         init(context);
     }
+
+//    @Override
+//    public boolean fling(int velocityX, int velocityY) {
+//        velocityY *= 0.05f; // (between 0 for no fling, and 1 for normal fling, or more for faster fling).
+//        Log.d(TAG, "fling: " + velocityY);
+//        return super.fling(velocityX, velocityY);
+//    }
 
     public SuperBabalexView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -41,6 +49,10 @@ public class SuperBabalexView extends RecyclerView {
     private void init(Context context) {
         setLayoutManager(new LinearLayoutManager(context));
         snapperCarr.attachToRecyclerView(this);
+    }
+
+    public void attachParallaxBackgroundScroll(ParallaxBackgroundScrollListener listener) {
+        this.backgroundScrollListener = listener;
     }
 
     @Override
@@ -79,6 +91,11 @@ public class SuperBabalexView extends RecyclerView {
 
             prevFirstChildY = (int) firstChild.getY();
         }
+
+        scrollBy(dx, (int) (dy * 0.4f));
+        if (backgroundScrollListener != null) {
+            backgroundScrollListener.onScrolled(dx, dy);
+        }
     }
 
     private String state(int state) {
@@ -113,5 +130,9 @@ public class SuperBabalexView extends RecyclerView {
         void onScroll(int shiftByY, int imageHeight);
 
         void categoryChanged(int activePos);
+    }
+
+    interface ParallaxBackgroundScrollListener {
+        void onScrolled(int dx, int dy);
     }
 }

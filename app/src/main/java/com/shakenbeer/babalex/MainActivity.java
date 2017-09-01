@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.shakenbeer.babalex.data.Babalex;
 import com.shakenbeer.babalex.data.Storage;
+
+import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout babalexItemDataLayout;
     private CategoriesRecyclerViewManager categoriesManager;
     private RecyclerView categoriesRecyclerView;
+    private RecyclerView backgroundRecyclerView;
     private CategoryAdapter categoryAdapter;
 
     @Override
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-
+        superBabalex.attachParallaxBackgroundScroll(parallaxBackgroundScrollListener);
         superBabalex.setScrollListener(verticalScrollListener);
 
         babalexItemDataLayout = (LinearLayout) findViewById(R.id.babalex_item_data_layout);
@@ -95,6 +99,21 @@ public class MainActivity extends AppCompatActivity {
         categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
         categoriesRecyclerView.setAdapter(categoryAdapter);
         showNextCategoryText();
+
+
+        backgroundRecyclerView = (RecyclerView) findViewById(R.id.background_recycler_view);
+        backgroundRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        backgroundRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(Storage.macaron().getBackgroundResId());
+        list.add(Storage.cupcakes().getBackgroundResId());
+        backgroundRecyclerView.setAdapter(new BackgroundAdapter(list));
+
     }
 
     private void showNextCategoryText() {
@@ -140,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
             categoriesRecyclerView.setTranslationY(translationY);
             categoriesRecyclerView.setAlpha(shiftByY * 1.08f / imageHeight);
             babalexItemDataLayout.setAlpha(1f - (shiftByY * 3f / imageHeight));
-            addToCartButton.setAlpha(1f - (shiftByY * 3f / imageHeight));
             nextCategory.setAlpha(1f - (shiftByY * 3f / imageHeight));
             float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
             categoriesRecyclerView.setScaleX(scaleFactor);
@@ -177,5 +195,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    private final SuperBabalexView.ParallaxBackgroundScrollListener parallaxBackgroundScrollListener =
+            new SuperBabalexView.ParallaxBackgroundScrollListener() {
+                @Override
+                public void onScrolled(int dx, int dy) {
+                    backgroundRecyclerView.scrollBy(dx, (int) (dy * 0.85f));
+                }
+            };
 
 }
