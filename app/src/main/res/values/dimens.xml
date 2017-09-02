@@ -4,4 +4,6 @@
     <dimen name="category_item_recycler_view_height">27dp</dimen>
     <dimen name="superbabalex_padding_right">62dp</dimen>
     <dimen name="superbabalex_padding_left">62dp</dimen>
+    <dimen name="add_to_cart_button_height">60dp</dimen>
+    <dimen name="superbabalex_negative_height_to_be_converted_to_dp">60px</dimen>
 </resources>

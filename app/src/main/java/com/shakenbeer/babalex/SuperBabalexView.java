@@ -1,8 +1,8 @@
 package com.shakenbeer.babalex;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -17,7 +17,6 @@ public class SuperBabalexView extends RecyclerView {
 
     private BabalexView target;
     private int changeCategoryEdge = 0;
-    private int prevFirstChildY = 0;
 
     @Nullable
     private ScrollListener scrollListener;
@@ -26,7 +25,16 @@ public class SuperBabalexView extends RecyclerView {
 
     public SuperBabalexView(Context context) {
         super(context);
-        init(context);
+        init();
+    }
+
+    @Override
+    protected void onMeasure(int widthSpec, int heightSpec) {
+        super.onMeasure(widthSpec, heightSpec);
+
+        int dp = (int) (getResources().getDimension(R.dimen.superbabalex_negative_height_to_be_converted_to_dp) *
+                Resources.getSystem().getDisplayMetrics().density);
+        setMeasuredDimension((int) widthSpec, (int) heightSpec - dp);
     }
 
 //    @Override
@@ -38,16 +46,15 @@ public class SuperBabalexView extends RecyclerView {
 
     public SuperBabalexView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public SuperBabalexView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        setLayoutManager(new LinearLayoutManager(context));
+    private void init() {
         snapperCarr.attachToRecyclerView(this);
     }
 
@@ -81,18 +88,16 @@ public class SuperBabalexView extends RecyclerView {
 
             int firstChildCategory = findContainingViewHolder(firstChild).getAdapterPosition();
             //moving down
-            if (dy > 0 && prevFirstChildY > changeCategoryEdge && firstChild.getY() * 1.1f < changeCategoryEdge) {
+            if (dy > 0 && firstChild.getY() * 1.1f < changeCategoryEdge) {
                 scrollListener.categoryChanged(firstChildCategory + 1);
             }
             //moving up
-            else if (dy < 0 && prevFirstChildY < changeCategoryEdge && firstChild.getY() * 0.9f > changeCategoryEdge) {
+            else if (dy < 0 && firstChild.getY() * 0.9f > changeCategoryEdge) {
                 scrollListener.categoryChanged(firstChildCategory);
             }
-
-            prevFirstChildY = (int) firstChild.getY();
         }
 
-        scrollBy(dx, (int) (dy * 0.4f));
+        scrollBy(dx, (int) (dy * 0.4f)); // parallax for this view
         if (backgroundScrollListener != null) {
             backgroundScrollListener.onScrolled(dx, dy);
         }

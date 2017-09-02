@@ -2,6 +2,7 @@ package com.shakenbeer.babalex;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.ActionBar;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.hide();
 
         superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
-
+        superBabalex.setLayoutManager(new LinearLayoutManager(this));
         superBabalexAdapter = new SuperBabalexAdapter(Storage.sweets(), horizontalScrollListener,
                 onItemSelectedCallback);
         superBabalex.setAdapter(superBabalexAdapter);
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             bundle.putInt(SELECTED_ITEM_CATEGORY_BACKGROUND,
                     Storage.sweets().get(categoryAdapter.getSelectedPosition()).getBackgroundResId()); // temporary solution
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation(MainActivity.this, imageView, imageView.getTransitionName());
                 intent.putExtras(bundle);
