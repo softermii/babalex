@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -186,8 +187,11 @@ public class MainActivity extends AppCompatActivity {
                     Storage.sweets().get(categoryAdapter.getSelectedPosition()).getBackgroundResId()); // temporary solution
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Pair<View, String> animatedImage = new Pair<>(imageView, imageView.getTransitionName());
+                Pair<View, String> sharedButton = new Pair<>((View) addToCartButton, addToCartButton.getTransitionName());
+
                 ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(MainActivity.this, imageView, imageView.getTransitionName());
+                        makeSceneTransitionAnimation(MainActivity.this, animatedImage, sharedButton);
                 intent.putExtras(bundle);
                 startActivity(intent, options.toBundle());
             } else {
