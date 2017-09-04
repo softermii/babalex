@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
 
 public class SuperBabalexView extends RecyclerView {
@@ -56,6 +58,20 @@ public class SuperBabalexView extends RecyclerView {
 
     private void init() {
         snapperCarr.attachToRecyclerView(this);
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // This is a workaround of a system bug.
+                // When user scrolls up to the top item, drags finger further behind the SuperBabalexItem height (so it doesn't scroll)
+                // Then move finger off the screen - system sometimes doesn't fire up onScrollStateChanged() method.
+                final int action = event.getAction();
+                boolean mFingerUp = action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL;
+                if (mFingerUp) {
+                    onScrollStateChanged(SCROLL_STATE_SETTLING);
+                }
+                return false;
+            }
+        });
     }
 
     public void attachParallaxBackgroundScroll(ParallaxBackgroundScrollListener listener) {

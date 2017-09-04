@@ -10,6 +10,7 @@
         android:id="@+id/background_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0.3"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"

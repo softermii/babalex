@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -160,8 +159,9 @@ public class MainActivity extends AppCompatActivity {
             float translationY = shiftByY * .7f + ((shiftByY * 1.2f) / imageHeight);
             categoriesRecyclerView.setTranslationY(translationY);
             categoriesRecyclerView.setAlpha(shiftByY * 1.08f / imageHeight);
-            babalexItemDataLayout.setAlpha(1f - (shiftByY * 3f / imageHeight));
-            nextCategory.setAlpha(1f - (shiftByY * 3f / imageHeight));
+            float alpha = 1f - (shiftByY * 3f / imageHeight);
+            babalexItemDataLayout.setAlpha(alpha);
+            nextCategory.setAlpha(alpha);
             float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
             categoriesRecyclerView.setScaleX(scaleFactor);
             categoriesRecyclerView.setScaleY(scaleFactor);
@@ -169,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void categoryChanged(int activePosition) {
-            Log.d(TAG, "categoryChanged: " + activePosition);
             categoriesManager.onCategoryChanged(activePosition);
             categoryAdapter.setSelected(activePosition);
             showNextCategoryText();
