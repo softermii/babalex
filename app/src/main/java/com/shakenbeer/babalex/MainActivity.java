@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
         });
         backgroundRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<Integer> list = new ArrayList<>();
-        list.add(Storage.macaron().getBackgroundResId());
         list.add(Storage.cupcakes().getBackgroundResId());
+        list.add(Storage.macaron().getBackgroundResId());
         backgroundRecyclerView.setAdapter(new BackgroundAdapter(list));
 
     }
