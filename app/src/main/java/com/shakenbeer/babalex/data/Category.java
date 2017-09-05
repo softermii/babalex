@@ -7,11 +7,20 @@ import java.util.List;
 public class Category {
 
     private String name;
-
+    private int backgroundResId;
     private List<Babalex> items = new ArrayList<>();
+
+    public Category(String name, int backgroundResId) {
+        this.name = name;
+        this.backgroundResId = backgroundResId;
+    }
 
     public Category(String name) {
         this.name = name;
+    }
+
+    public int getBackgroundResId() {
+        return backgroundResId;
     }
 
     public String getName() {

@@ -2,6 +2,6 @@ package com.shakenbeer.babalex.data;
 
 
 public interface Babalex {
-    int getImage();
+    int getImageRes();
     String getName();
 }
