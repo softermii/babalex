@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Babalex</string>
     <string name="babalex">Babalex</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="checkout_button">Checkout</string>
+    <string name="total_price">Total:</string>
+    <string name="cart_title">Cart</string>
+    <string name="dollar_sign">$</string>
 </resources>

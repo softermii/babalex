@@ -1,36 +1,63 @@
 package com.shakenbeer.babalex;
 
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.shakenbeer.babalex.cart.CartActivity;
 import com.shakenbeer.babalex.data.Babalex;
-import com.shakenbeer.babalex.data.CategoryItemAnimator;
 import com.shakenbeer.babalex.data.Storage;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+import java.util.ArrayList;
+
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String SELECTED_ITEM_NAME = "selected_item_name";
+    public static final String SELECTED_ITEM_IMAGE_RES = "selected_item_image_res";
+    public static final String SELECTED_ITEM_CATEGORY_BACKGROUND = "selected_item_category_background";
+    private static final String TAG = "MainActivity";
     private SuperBabalexView superBabalex;
     private SuperBabalexAdapter superBabalexAdapter;
-    private TextView textView;
+    private TextView babalexItemTitle;
+    private TextView babalexItemDescription;
+    private TextView babalexItemPrice;
+    private TextView babalexCurrencySign;
+    private Button addToCartButton;
+    private ImageButton cartButton;
+    private TextView nextCategory;
+    private LinearLayout babalexItemDataLayout;
     private CategoriesRecyclerViewManager categoriesManager;
     private RecyclerView categoriesRecyclerView;
+    private RecyclerView backgroundRecyclerView;
     private CategoryAdapter categoryAdapter;
-    private SmoothScrollLinearLayoutManager scrollLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.hide();
 
         superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
-
-        superBabalexAdapter = new SuperBabalexAdapter(Storage.animals(), horizontalScrollListener);
+        superBabalex.setLayoutManager(new LinearLayoutManager(this));
+        superBabalexAdapter = new SuperBabalexAdapter(Storage.sweets(), horizontalScrollListener,
+                onItemSelectedCallback);
         superBabalex.setAdapter(superBabalexAdapter);
 
         superBabalex.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -44,49 +71,87 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                int childCount = superBabalex.getChildCount();
-//                BabalexView babalexView = (BabalexView) superBabalex.getChildAt(0);
-//                Log.d("SuperBabalex", "dy = " + dy + ", childCount = " + childCount + ", first child y = " + babalexView.getY());
+            }
+        });
+        superBabalex.attachParallaxBackgroundScroll(parallaxBackgroundScrollListener);
+        superBabalex.setScrollListener(verticalScrollListener);
+
+        babalexItemDataLayout = (LinearLayout) findViewById(R.id.babalex_item_data_layout);
+        babalexItemTitle = (TextView) findViewById(R.id.total_price_title);
+        babalexItemDescription = (TextView) findViewById(R.id.babalex_item_description);
+        babalexItemPrice = (TextView) findViewById(R.id.babalex_item_price);
+        babalexCurrencySign = (TextView) findViewById(R.id.currency_sign);
+        addToCartButton = (Button) findViewById(R.id.checkout_button);
+        cartButton = (ImageButton) findViewById(R.id.cart_icon);
+        nextCategory = (TextView) findViewById(R.id.swipe_up_text_view);
+
+        Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
+        Typeface textRegularLightTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
+        Typeface textRegularTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSans.ttf");
+        babalexItemTitle.setTypeface(titleTypeface, Typeface.BOLD);
+        babalexItemDescription.setTypeface(textRegularLightTypeface);
+        babalexCurrencySign.setTypeface(textRegularLightTypeface);
+        babalexItemPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
+        nextCategory.setTypeface(textRegularTypeface, Typeface.BOLD);
+        addToCartButton.setTypeface(textRegularTypeface, Typeface.BOLD);
+
+        categoryAdapter = new CategoryAdapter(this, Storage.sweets().getCategories());
+        SmoothScrollLinearLayoutManager scrollLinearLayoutManager =
+                new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
+        categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
+                Storage.sweets().getCategoriesCount());
+        categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
+        categoriesRecyclerView.setAdapter(categoryAdapter);
+        showNextCategoryText();
+
+
+        backgroundRecyclerView = (RecyclerView) findViewById(R.id.background_recycler_view);
+        backgroundRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        backgroundRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(Storage.cupcakes().getBackgroundResId());
+        list.add(Storage.macaron().getBackgroundResId());
+        backgroundRecyclerView.setAdapter(new BackgroundAdapter(list));
+
+        cartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CartActivity.class));
             }
         });
 
-        superBabalex.setScrollListener(verticalScrollListener);
-
-        textView = (TextView) findViewById(R.id.textView);
-
-        categoryAdapter = new CategoryAdapter(Storage.animals().getCategories());
-        scrollLinearLayoutManager = new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
-        categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
-                Storage.animals().getCategoriesCount());
-        categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
-        categoriesRecyclerView.setItemAnimator(new CategoryItemAnimator());
-        categoriesRecyclerView.setAdapter(categoryAdapter);
-
     }
 
-    private String state(int state) {
-        if (state == SCROLL_STATE_IDLE) {
-            return "idle";
-        } else if (state == SCROLL_STATE_DRAGGING) {
-            return "dragging";
-        } else /*if (state == SCROLL_STATE_SETTLING)*/ {
-            return "settling";
+    private void showNextCategoryText() {
+        int size = categoryAdapter.getItemCount();
+        int selected = categoryAdapter.getSelectedPosition();
+        if (selected < size - 1) {
+            nextCategory.setVisibility(View.VISIBLE);
+            nextCategory.setText(Storage.sweets().get(selected + 1).getName());
+        } else {
+            // hide next category text if the last item is selected
+            nextCategory.setVisibility(View.INVISIBLE);
         }
     }
 
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
         public void onScroll(float shiftByX, float alpha) {
-            textView.setTranslationX(shiftByX);
-            textView.setAlpha(alpha);
+            babalexItemDataLayout.setTranslationX(shiftByX);
+            babalexItemDataLayout.setAlpha(alpha);
         }
 
         @Override
         public void onScroll(float shiftByX, float alpha, Babalex babalex) {
             //Don't change babalex item data while scrolling
             if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
-                textView.setText(babalex.getName());
+                babalexItemTitle.setText(babalex.getName());
             }
             onScroll(shiftByX, alpha);
         }
@@ -102,8 +167,12 @@ public class MainActivity extends AppCompatActivity {
                 I used this dependency:  ((shiftByY * 1.2f) / imageHeight).
                 1.2f is a little adjustment for the animation acceleration.
              */
-            float translationY = shiftByY * 0.4f + ((shiftByY * 1.2f) / imageHeight);
+            float translationY = shiftByY * .7f + ((shiftByY * 1.2f) / imageHeight);
             categoriesRecyclerView.setTranslationY(translationY);
+            categoriesRecyclerView.setAlpha(shiftByY * 1.08f / imageHeight);
+            float alpha = 1f - (shiftByY * 3f / imageHeight);
+            babalexItemDataLayout.setAlpha(alpha);
+            nextCategory.setAlpha(alpha);
             float scaleFactor = 1 + .25f * ((float) shiftByY / imageHeight);
             categoriesRecyclerView.setScaleX(scaleFactor);
             categoriesRecyclerView.setScaleY(scaleFactor);
@@ -113,7 +182,41 @@ public class MainActivity extends AppCompatActivity {
         public void categoryChanged(int activePosition) {
             categoriesManager.onCategoryChanged(activePosition);
             categoryAdapter.setSelected(activePosition);
+            showNextCategoryText();
         }
     };
+
+    private final BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback = new BabalexAdapter.OnItemSelectedCallback() {
+        @Override
+        public void onItemSelected(int position, Babalex item, View imageView) {
+            Intent intent = new Intent(MainActivity.this, ExtendedBabalexActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(SELECTED_ITEM_NAME, item.getName());
+            bundle.putInt(SELECTED_ITEM_IMAGE_RES, item.getImageRes());
+            bundle.putInt(SELECTED_ITEM_CATEGORY_BACKGROUND,
+                    Storage.sweets().get(categoryAdapter.getSelectedPosition()).getBackgroundResId()); // temporary solution
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Pair<View, String> animatedImage = new Pair<>(imageView, imageView.getTransitionName());
+                Pair<View, String> sharedButton = new Pair<>((View) addToCartButton, addToCartButton.getTransitionName());
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(MainActivity.this, animatedImage, sharedButton);
+                intent.putExtras(bundle);
+                startActivity(intent, options.toBundle());
+            } else {
+                startActivity(intent, bundle);
+            }
+
+        }
+    };
+
+    private final SuperBabalexView.ParallaxBackgroundScrollListener parallaxBackgroundScrollListener =
+            new SuperBabalexView.ParallaxBackgroundScrollListener() {
+                @Override
+                public void onScrolled(int dx, int dy) {
+                    backgroundRecyclerView.scrollBy(dx, (int) (dy * 0.85f));
+                }
+            };
 
 }
