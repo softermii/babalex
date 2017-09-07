@@ -6,16 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shakenbeer.babalex.data.BabalexCollection;
+import com.shakenbeer.babalex.data.Category;
 
-public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapter.SuperBabalexViewHolder> {
+import java.util.List;
+
+class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapter.SuperBabalexViewHolder> {
 
     private static final String TAG = "SuperBabalexAdapter";
-    private BabalexCollection data;
+    private List<Category> data;
     private BabalexView.ScrollListener scrollListener;
     private BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback;
 
-    public SuperBabalexAdapter(BabalexCollection data, BabalexView.ScrollListener scrollListener, BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback) {
+    SuperBabalexAdapter(List<Category> data, BabalexView.ScrollListener scrollListener, BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback) {
         this.data = data;
         this.scrollListener = scrollListener;
         this.onItemSelectedCallback = onItemSelectedCallback;
@@ -38,11 +40,11 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
         return data.size();
     }
 
-    public static class SuperBabalexViewHolder extends RecyclerView.ViewHolder {
+    static class SuperBabalexViewHolder extends RecyclerView.ViewHolder {
 
         BabalexView babalexView;
 
-        public SuperBabalexViewHolder(View itemView, BabalexView.ScrollListener scrollListener) {
+        SuperBabalexViewHolder(View itemView, BabalexView.ScrollListener scrollListener) {
             super(itemView);
             babalexView = (BabalexView) itemView.findViewById(R.id.babalexView);
             babalexView.setScrollListener(scrollListener);

@@ -2,11 +2,11 @@ package com.shakenbeer.babalex;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -29,9 +29,8 @@ public class ExtendedBabalexActivity extends AppCompatActivity {
         int babalexItemImageRes = getIntent().getExtras().getInt(MainActivity.SELECTED_ITEM_IMAGE_RES);
         int babalexBackgroundRes = getIntent().getExtras().getInt(MainActivity.SELECTED_ITEM_CATEGORY_BACKGROUND);
 
-        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.babalex_extended_screen_layout);
-        layout.setBackgroundResource(babalexBackgroundRes);
         SquareImageView imageView = (SquareImageView) findViewById(R.id.image);
+        ImageView backgroundImageView = (ImageView) findViewById(R.id.background_image_view);
         Button addToCartButton = (Button) findViewById(R.id.add_to_cart_button);
         TextView title = (TextView) findViewById(R.id.babalex_item_title);
         TextView description = (TextView) findViewById(R.id.babalex_item_description);
@@ -64,7 +63,7 @@ public class ExtendedBabalexActivity extends AppCompatActivity {
         totalFat.setTypeface(textRegularLightTypeface);
         weight.setTypeface(textRegularLightTypeface);
 
-
+        backgroundImageView.setImageResource(babalexBackgroundRes);
         imageView.setImageResource(babalexItemImageRes);
         title.setText(babalexItemName);
 

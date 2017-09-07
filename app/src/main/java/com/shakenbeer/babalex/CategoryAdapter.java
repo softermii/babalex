@@ -40,7 +40,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewH
     @Override
     public void onBindViewHolder(CategoryViewHolder holder, int position) {
         Category category = items.get(position);
-        holder.categoryTextView.setText(category.getName());
+        holder.categoryTextView.setText(category.getTitle());
         boolean isSelected = position == selected;
         holder.underscoreView.setVisibility(isSelected ? View.VISIBLE : View.GONE);
         holder.categoryTextView.setTypeface(gillSansLight, isSelected ? Typeface.BOLD : Typeface.NORMAL);

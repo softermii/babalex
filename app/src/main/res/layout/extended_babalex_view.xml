@@ -7,8 +7,20 @@
     android:background="@drawable/background_bitmap_mask"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/background_image_view"
+        android:alpha="0.3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="@+id/add_to_cart_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-        android:id="@+id/total_price_title"
+        android:id="@+id/babalex_item_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -45,7 +57,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/total_price_title" />
+        app:layout_constraintTop_toBottomOf="@+id/babalex_item_title" />
 
 
     <ImageButton
@@ -83,7 +95,7 @@
         android:id="@+id/add_to_cart_button"
         android:layout_width="0dp"
         android:transitionName="@string/shared_add_to_cart_button"
-        android:layout_height="@dimen/add_to_cart_button_height"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/add_to_cart_background"
         android:text="@string/add_to_cart"
@@ -92,8 +104,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginBottom="-2dp" />
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
         android:id="@+id/ingredients"
@@ -140,7 +151,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.45" />
+        app:layout_constraintGuide_percent="0.45"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="185dp" />
 
     <com.shakenbeer.babalex.SquareImageView
         android:id="@+id/image"
@@ -154,7 +167,6 @@
         tools:src="@drawable/cupcake1"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/user_profile_icon"
-        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toTopOf="@+id/add_to_cart_button" />
 
 
@@ -169,7 +181,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/babalex_item_description" />
+        app:layout_constraintTop_toBottomOf="@+id/babalex_item_description"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/serving_size"
@@ -181,7 +194,8 @@
         android:textColor="@color/regularText"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/field_serving_size" />
+        app:layout_constraintTop_toBottomOf="@+id/field_serving_size"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/field_calories"
@@ -194,7 +208,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/serving_size" />
+        app:layout_constraintTop_toBottomOf="@+id/serving_size"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/calories"
@@ -206,7 +221,8 @@
         android:textColor="@color/regularText"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/field_calories" />
+        app:layout_constraintTop_toBottomOf="@+id/field_calories"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/field_total_fat"
@@ -219,7 +235,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/calories" />
+        app:layout_constraintTop_toBottomOf="@+id/calories"
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/total_fat"
@@ -231,7 +248,8 @@
         android:textColor="@color/regularText"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/field_total_fat" />
+        app:layout_constraintTop_toBottomOf="@+id/field_total_fat"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/field_weight"
@@ -244,7 +262,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/total_fat" />
+        app:layout_constraintTop_toBottomOf="@+id/total_fat"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:id="@+id/weight"
@@ -256,7 +275,8 @@
         android:textColor="@color/regularText"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/field_weight" />
+        app:layout_constraintTop_toBottomOf="@+id/field_weight"
+        android:layout_marginStart="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>

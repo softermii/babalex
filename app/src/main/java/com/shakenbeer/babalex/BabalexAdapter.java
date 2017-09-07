@@ -1,12 +1,13 @@
 package com.shakenbeer.babalex;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shakenbeer.babalex.data.Babalex;
+import com.shakenbeer.babalex.data.BabalexItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,15 @@ import java.util.List;
 class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> {
 
     private static final String TAG = "BabalexAdapter";
+    private Context context;
     private final OnItemSelectedCallback onItemSelectedCallback;
 
     interface OnItemSelectedCallback {
-        void onItemSelected(int position, Babalex item, View imageView);
+        void onItemSelected(int position, BabalexItem item, View imageView);
     }
 
-    BabalexAdapter(OnItemSelectedCallback onItemSelectedCallback) {
+    BabalexAdapter(Context context, OnItemSelectedCallback onItemSelectedCallback) {
+        this.context = context;
         this.onItemSelectedCallback = onItemSelectedCallback;
     }
 
@@ -32,16 +35,17 @@ class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> 
         return new BabalexHolder(container);
     }
 
-    private List<Babalex> items = new ArrayList<>();
+    private List<BabalexItem> items = new ArrayList<>();
 
-    void setItems(List<Babalex> items) {
+    void setItems(List<BabalexItem> items) {
         this.items = items;
         notifyDataSetChanged();
     }
 
     @Override
     public void onBindViewHolder(final BabalexHolder holder, int position) {
-        holder.image.setImageResource(items.get(position).getImageRes());
+        holder.image.setImageResource(
+                Utils.getDrawableResIdByImageTitle(context, items.get(position).getImageName()));
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +63,7 @@ class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> 
         });
     }
 
-    public Babalex getItem(int adapterPos) {
+    public BabalexItem getItem(int adapterPos) {
         return items.get(adapterPos);
     }
 

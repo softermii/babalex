@@ -62,6 +62,8 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
+
+        // TODO add cart adapter and related order logic
     }
 
 }
