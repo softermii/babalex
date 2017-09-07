@@ -10,13 +10,15 @@ import com.shakenbeer.babalex.data.BabalexCollection;
 
 public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapter.SuperBabalexViewHolder> {
 
-    BabalexCollection data;
+    private static final String TAG = "SuperBabalexAdapter";
+    private BabalexCollection data;
+    private BabalexView.ScrollListener scrollListener;
+    private BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback;
 
-    BabalexView.ScrollListener scrollListener;
-
-    public SuperBabalexAdapter(BabalexCollection data, BabalexView.ScrollListener scrollListener) {
+    public SuperBabalexAdapter(BabalexCollection data, BabalexView.ScrollListener scrollListener, BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback) {
         this.data = data;
         this.scrollListener = scrollListener;
+        this.onItemSelectedCallback = onItemSelectedCallback;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class SuperBabalexAdapter extends RecyclerView.Adapter<SuperBabalexAdapte
 
     @Override
     public void onBindViewHolder(SuperBabalexViewHolder holder, int position) {
-        holder.babalexView.setItems(data.get(position));
+        holder.babalexView.createAndSetAdapter(data.get(position), onItemSelectedCallback);
         holder.babalexView.setName("" + position);
     }
 

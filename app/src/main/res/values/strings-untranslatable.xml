@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shared_add_to_cart_button" translatable="false">shared_add_to_cart_button</string>
+    <string name="babalex_item_image_transition" translatable="false">babalex_item_image_transition</string>
+</resources>

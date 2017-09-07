@@ -27,6 +27,11 @@ public class Storage {
         macaron.add(new Candy("Ida Albertus Willahelm", R.drawable.macaron4));
         macaron.add(new Candy("Raginmund Hariman Auda", R.drawable.macaron5));
         sweets.addCategory(macaron);
+//        sweets.addCategory(cupcakes);
+//        sweets.addCategory(macaron);
+//        sweets.addCategory(cupcakes);
+//        sweets.addCategory(macaron);
+//        sweets.addCategory(cupcakes);
     }
 
 

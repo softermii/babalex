@@ -13,11 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.shakenbeer.babalex.cart.CartActivity;
 import com.shakenbeer.babalex.data.Babalex;
 import com.shakenbeer.babalex.data.Storage;
 
@@ -38,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView babalexItemPrice;
     private TextView babalexCurrencySign;
     private Button addToCartButton;
-    private ImageButton cartButton;
     private TextView nextCategory;
     private LinearLayout babalexItemDataLayout;
     private CategoriesRecyclerViewManager categoriesManager;
@@ -77,12 +74,11 @@ public class MainActivity extends AppCompatActivity {
         superBabalex.setScrollListener(verticalScrollListener);
 
         babalexItemDataLayout = (LinearLayout) findViewById(R.id.babalex_item_data_layout);
-        babalexItemTitle = (TextView) findViewById(R.id.total_price_title);
+        babalexItemTitle = (TextView) findViewById(R.id.babalex_item_title);
         babalexItemDescription = (TextView) findViewById(R.id.babalex_item_description);
         babalexItemPrice = (TextView) findViewById(R.id.babalex_item_price);
         babalexCurrencySign = (TextView) findViewById(R.id.currency_sign);
-        addToCartButton = (Button) findViewById(R.id.checkout_button);
-        cartButton = (ImageButton) findViewById(R.id.cart_icon);
+        addToCartButton = (Button) findViewById(R.id.add_to_cart_button);
         nextCategory = (TextView) findViewById(R.id.swipe_up_text_view);
 
         Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
@@ -118,13 +114,6 @@ public class MainActivity extends AppCompatActivity {
         list.add(Storage.cupcakes().getBackgroundResId());
         list.add(Storage.macaron().getBackgroundResId());
         backgroundRecyclerView.setAdapter(new BackgroundAdapter(list));
-
-        cartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, CartActivity.class));
-            }
-        });
 
     }
 
