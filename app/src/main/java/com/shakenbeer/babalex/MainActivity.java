@@ -17,20 +17,17 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.shakenbeer.babalex.cart.CartActivity;
+import com.shakenbeer.babalex.common.Utils;
 import com.shakenbeer.babalex.data.BabalexItem;
 import com.shakenbeer.babalex.data.Category;
 import com.shakenbeer.babalex.data.Sweets;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
-public class MainActivity extends AppCompatActivity implements Runnable {
+public class MainActivity extends AppCompatActivity {
 
     public static final String SELECTED_ITEM_NAME = "selected_item_name";
     public static final String SELECTED_ITEM_IMAGE_RES = "selected_item_image_res";
@@ -99,8 +96,6 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         nextCategory.setTypeface(textRegularTypeface, Typeface.BOLD);
         addToCartButton.setTypeface(textRegularTypeface, Typeface.BOLD);
 
-        new Thread(this).start(); // start parsing data from babalex_products.json
-
         backgroundRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -114,11 +109,13 @@ public class MainActivity extends AppCompatActivity implements Runnable {
                 startActivity(new Intent(MainActivity.this, CartActivity.class));
             }
         });
+
+        updateUI();
     }
 
-    private void updateUI(String json) {
-        Gson gson = new GsonBuilder().create();
-        sweets = gson.fromJson(json, Sweets.class);
+    // should be called after initial API response to update UI
+    private void updateUI() {
+        sweets = App.getSweetsInstance();
 
         categoryAdapter = new CategoryAdapter(this, sweets.getCategories());
         SmoothScrollLinearLayoutManager scrollLinearLayoutManager =
@@ -234,31 +231,4 @@ public class MainActivity extends AppCompatActivity implements Runnable {
                     backgroundRecyclerView.scrollBy(dx, (int) (dy * 0.85f));
                 }
             };
-
-    @Override
-    public void run() {
-        String json = null;
-        try {
-            InputStream inputStream = getAssets().open("babalex_products.json");
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-            json = new String(buffer, "UTF-8");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (json != null && !json.isEmpty()) {
-            final String finalJson = json;
-            babalexItemTitle.post(new Runnable() {
-                @Override
-                public void run() {
-                    updateUI(finalJson);
-                }
-            });
-        }
-
-    }
 }

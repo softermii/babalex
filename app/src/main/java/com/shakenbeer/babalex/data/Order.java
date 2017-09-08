@@ -1,6 +1,7 @@
 package com.shakenbeer.babalex.data;
 
-import android.util.SparseIntArray;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by onos on 08.09.17.
@@ -8,27 +9,28 @@ import android.util.SparseIntArray;
 
 public class Order {
 
-    private SparseIntArray orderArray = new SparseIntArray();
+    // stands for itemId and itemCounter
+    private Map<Integer, Integer> orderMap = new HashMap<>();
 
-    public SparseIntArray getOrderArray() {
-        return orderArray;
+    public Map<Integer, Integer> getOrderMap() {
+        return orderMap;
     }
 
-    public void addItem(int id) {
-        int itemsCount = orderArray.get(id);
-        if (itemsCount == 0) {
-            orderArray.put(id, 1);
-        } else if (itemsCount > 0) {
-            orderArray.put(id, ++itemsCount);
+    public void addItem(Integer id) {
+        Integer itemCounter = orderMap.get(id);
+        if (itemCounter == null) {
+            orderMap.put(id, 1);
+        } else if (itemCounter > 0) {
+            orderMap.put(id, ++itemCounter);
         }
     }
 
-    public void removeItemById(int id) {
-        orderArray.delete(id);
+    public void removeItemById(Integer id) {
+        orderMap.remove(id);
     }
 
-    public int getItemCountById(int id) {
-        return orderArray.get(id);
+    public int getItemCountById(Integer id) {
+        return orderMap.get(id);
     }
 
 }
