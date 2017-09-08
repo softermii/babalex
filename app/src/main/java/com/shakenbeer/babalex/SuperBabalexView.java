@@ -39,13 +39,6 @@ public class SuperBabalexView extends RecyclerView {
         setMeasuredDimension((int) widthSpec, (int) heightSpec - dp);
     }
 
-//    @Override
-//    public boolean fling(int velocityX, int velocityY) {
-//        velocityY *= 0.05f; // (between 0 for no fling, and 1 for normal fling, or more for faster fling).
-//        Log.d(TAG, "fling: " + velocityY);
-//        return super.fling(velocityX, velocityY);
-//    }
-
     public SuperBabalexView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -82,8 +75,10 @@ public class SuperBabalexView extends RecyclerView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         BabalexView babalexView = (BabalexView) getChildAt(0);
-        changeCategoryEdge = (int) (-0.4f * babalexView.getHeight());
-        Log.d(TAG, "onLayout image = " + babalexView.getImageMaxHeight() + ", changeCategoryEdge = " + changeCategoryEdge);
+        if (babalexView != null) {
+            changeCategoryEdge = (int) (-0.4f * babalexView.getHeight());
+            Log.d(TAG, "onLayout image = " + babalexView.getImageMaxHeight() + ", changeCategoryEdge = " + changeCategoryEdge);
+        }
     }
 
     @Override

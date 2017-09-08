@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shakenbeer.babalex.data.Babalex;
+import com.shakenbeer.babalex.data.BabalexItem;
 import com.shakenbeer.babalex.data.Category;
 
 import java.lang.annotation.Retention;
@@ -76,7 +76,7 @@ public class BabalexView extends RecyclerView {
     }
 
     public void createAndSetAdapter(Category category, BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback) {
-        babalexAdapter = new BabalexAdapter(onItemSelectedCallback);
+        babalexAdapter = new BabalexAdapter(getContext(), onItemSelectedCallback);
         babalexAdapter.setItems(category.getItems());
         setAdapter(babalexAdapter);
     }
@@ -249,7 +249,7 @@ public class BabalexView extends RecyclerView {
 
                 ViewHolder viewHolder = findContainingViewHolder(targetChild);
                 if (viewHolder != null) {
-                    Babalex babalex = babalexAdapter.getItem(viewHolder.getAdapterPosition());
+                    BabalexItem babalex = babalexAdapter.getItem(viewHolder.getAdapterPosition());
                     scrollListener.onScroll(deltaX, alpha, babalex);
                 } else {
                     scrollListener.onScroll(deltaX, alpha);
@@ -275,7 +275,7 @@ public class BabalexView extends RecyclerView {
     interface ScrollListener {
         void onScroll(float shiftByX, float alpha);
 
-        void onScroll(float shiftByX, float alpha, Babalex babalex);
+        void onScroll(float shiftByX, float alpha, BabalexItem babalex);
     }
 
 

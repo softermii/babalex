@@ -13,17 +13,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.shakenbeer.babalex.data.Babalex;
-import com.shakenbeer.babalex.data.Storage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.shakenbeer.babalex.cart.CartActivity;
+import com.shakenbeer.babalex.data.BabalexItem;
+import com.shakenbeer.babalex.data.Category;
+import com.shakenbeer.babalex.data.Sweets;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Runnable {
 
     public static final String SELECTED_ITEM_NAME = "selected_item_name";
     public static final String SELECTED_ITEM_IMAGE_RES = "selected_item_image_res";
@@ -36,12 +43,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView babalexItemPrice;
     private TextView babalexCurrencySign;
     private Button addToCartButton;
+    private ImageButton cartImageButton;
     private TextView nextCategory;
     private LinearLayout babalexItemDataLayout;
     private CategoriesRecyclerViewManager categoriesManager;
     private RecyclerView categoriesRecyclerView;
     private RecyclerView backgroundRecyclerView;
     private CategoryAdapter categoryAdapter;
+
+    private Sweets sweets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         superBabalex = (SuperBabalexView) findViewById(R.id.super_babalex);
         superBabalex.setLayoutManager(new LinearLayoutManager(this));
-        superBabalexAdapter = new SuperBabalexAdapter(Storage.sweets(), horizontalScrollListener,
-                onItemSelectedCallback);
-        superBabalex.setAdapter(superBabalexAdapter);
-
         superBabalex.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         superBabalex.attachParallaxBackgroundScroll(parallaxBackgroundScrollListener);
         superBabalex.setScrollListener(verticalScrollListener);
 
+        backgroundRecyclerView = (RecyclerView) findViewById(R.id.background_recycler_view);
         babalexItemDataLayout = (LinearLayout) findViewById(R.id.babalex_item_data_layout);
         babalexItemTitle = (TextView) findViewById(R.id.babalex_item_title);
         babalexItemDescription = (TextView) findViewById(R.id.babalex_item_description);
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         babalexCurrencySign = (TextView) findViewById(R.id.currency_sign);
         addToCartButton = (Button) findViewById(R.id.add_to_cart_button);
         nextCategory = (TextView) findViewById(R.id.swipe_up_text_view);
+        cartImageButton = (ImageButton) findViewById(R.id.cart_icon);
 
         Typeface titleTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "BradHitc.ttf");
         Typeface textRegularLightTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "GillSansLight.ttf");
@@ -91,28 +99,46 @@ public class MainActivity extends AppCompatActivity {
         nextCategory.setTypeface(textRegularTypeface, Typeface.BOLD);
         addToCartButton.setTypeface(textRegularTypeface, Typeface.BOLD);
 
-        categoryAdapter = new CategoryAdapter(this, Storage.sweets().getCategories());
-        SmoothScrollLinearLayoutManager scrollLinearLayoutManager =
-                new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
-        categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
-                Storage.sweets().getCategoriesCount());
-        categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
-        categoriesRecyclerView.setAdapter(categoryAdapter);
-        showNextCategoryText();
+        new Thread(this).start(); // start parsing data from babalex_products.json
 
-
-        backgroundRecyclerView = (RecyclerView) findViewById(R.id.background_recycler_view);
         backgroundRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
             }
         });
+
+        cartImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CartActivity.class));
+            }
+        });
+    }
+
+    private void updateUI(String json) {
+        Gson gson = new GsonBuilder().create();
+        sweets = gson.fromJson(json, Sweets.class);
+
+        categoryAdapter = new CategoryAdapter(this, sweets.getCategories());
+        SmoothScrollLinearLayoutManager scrollLinearLayoutManager =
+                new SmoothScrollLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        categoriesRecyclerView = (RecyclerView) findViewById(R.id.categories);
+        categoriesManager = new CategoriesRecyclerViewManager(categoriesRecyclerView,
+                sweets.getCategoriesCount());
+        categoriesRecyclerView.setLayoutManager(scrollLinearLayoutManager);
+        categoriesRecyclerView.setAdapter(categoryAdapter);
+        showNextCategoryText();
+
+        superBabalexAdapter = new SuperBabalexAdapter(sweets.getCategories(), horizontalScrollListener,
+                onItemSelectedCallback);
+        superBabalex.setAdapter(superBabalexAdapter);
+
         backgroundRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<Integer> list = new ArrayList<>();
-        list.add(Storage.cupcakes().getBackgroundResId());
-        list.add(Storage.macaron().getBackgroundResId());
+        for (Category c : sweets.getCategories()) {
+            list.add(Utils.getDrawableResIdByImageTitle(this, c.getImageName()));
+        }
         backgroundRecyclerView.setAdapter(new BackgroundAdapter(list));
 
     }
@@ -122,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         int selected = categoryAdapter.getSelectedPosition();
         if (selected < size - 1) {
             nextCategory.setVisibility(View.VISIBLE);
-            nextCategory.setText(Storage.sweets().get(selected + 1).getName());
+            nextCategory.setText(sweets.getCategory(selected + 1).getTitle());
         } else {
             // hide next category text if the last item is selected
             nextCategory.setVisibility(View.INVISIBLE);
@@ -137,10 +163,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onScroll(float shiftByX, float alpha, Babalex babalex) {
+        public void onScroll(float shiftByX, float alpha, BabalexItem babalex) {
             //Don't change babalex item data while scrolling
             if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
-                babalexItemTitle.setText(babalex.getName());
+                babalexItemTitle.setText(babalex.getTitle());
             }
             onScroll(shiftByX, alpha);
         }
@@ -177,13 +203,14 @@ public class MainActivity extends AppCompatActivity {
 
     private final BabalexAdapter.OnItemSelectedCallback onItemSelectedCallback = new BabalexAdapter.OnItemSelectedCallback() {
         @Override
-        public void onItemSelected(int position, Babalex item, View imageView) {
+        public void onItemSelected(int position, BabalexItem item, View imageView) {
             Intent intent = new Intent(MainActivity.this, ExtendedBabalexActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString(SELECTED_ITEM_NAME, item.getName());
-            bundle.putInt(SELECTED_ITEM_IMAGE_RES, item.getImageRes());
-            bundle.putInt(SELECTED_ITEM_CATEGORY_BACKGROUND,
-                    Storage.sweets().get(categoryAdapter.getSelectedPosition()).getBackgroundResId()); // temporary solution
+            bundle.putString(SELECTED_ITEM_NAME, item.getTitle());
+            bundle.putInt(SELECTED_ITEM_IMAGE_RES, Utils.getDrawableResIdByImageTitle(
+                    MainActivity.this, item.getImageName()));
+            bundle.putInt(SELECTED_ITEM_CATEGORY_BACKGROUND, Utils.getDrawableResIdByImageTitle(MainActivity.this,
+                    sweets.getCategory(categoryAdapter.getSelectedPosition()).getImageName()));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Pair<View, String> animatedImage = new Pair<>(imageView, imageView.getTransitionName());
@@ -208,4 +235,30 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+    @Override
+    public void run() {
+        String json = null;
+        try {
+            InputStream inputStream = getAssets().open("babalex_products.json");
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+            json = new String(buffer, "UTF-8");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (json != null && !json.isEmpty()) {
+            final String finalJson = json;
+            babalexItemTitle.post(new Runnable() {
+                @Override
+                public void run() {
+                    updateUI(finalJson);
+                }
+            });
+        }
+
+    }
 }
