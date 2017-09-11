@@ -9,8 +9,9 @@ import java.util.List;
  * Created by onos on 08.09.17.
  */
 
-public interface CartView extends BaseView {
+interface CartView extends BaseView {
 
     void showOrder(List<BabalexCartItem> orderList);
 
+    void showTotalPrice(double price);
 }

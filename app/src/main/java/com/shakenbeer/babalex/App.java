@@ -41,10 +41,6 @@ public class App extends Application {
 
         if (order == null) {
             order = new Order();
-            order.addItem(2);
-            order.addItem(2);
-            order.addItem(1);
-            order.addItem(6);
         }
 
         String json = Utils.loadSweetsFromAssets(getAssets());

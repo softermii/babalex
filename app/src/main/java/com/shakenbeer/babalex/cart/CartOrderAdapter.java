@@ -16,6 +16,8 @@ import com.shakenbeer.babalex.data.BabalexCartItem;
 
 import java.util.List;
 
+;
+
 /**
  * Created by onos on 08.09.17.
  */
@@ -23,11 +25,20 @@ import java.util.List;
 class CartOrderAdapter extends RecyclerView.Adapter<CartOrderAdapter.BabalexCartItemHolder> {
 
     private Context context;
+    private CartOrderAdapter.OnOrderChangedListener orderChangedListener;
     private List<BabalexCartItem> orderList;
+    private Typeface titleTypeface;
+    private Typeface textRegularLightTypeface;
+    private Typeface textRegularTypeface;
 
-    public CartOrderAdapter(Context context, List<BabalexCartItem> orderList) {
+    CartOrderAdapter(Context context, List<BabalexCartItem> orderList,
+                     CartOrderAdapter.OnOrderChangedListener orderChangedListener) {
         this.context = context;
         this.orderList = orderList;
+        this.orderChangedListener = orderChangedListener;
+        titleTypeface = Typeface.createFromAsset(context.getAssets(), "BradHitc.ttf");
+        textRegularLightTypeface = Typeface.createFromAsset(context.getAssets(), "GillSansLight.ttf");
+        textRegularTypeface = Typeface.createFromAsset(context.getAssets(), "GillSans.ttf");
     }
 
     @Override
@@ -37,7 +48,7 @@ class CartOrderAdapter extends RecyclerView.Adapter<CartOrderAdapter.BabalexCart
     }
 
     @Override
-    public void onBindViewHolder(BabalexCartItemHolder holder, int position) {
+    public void onBindViewHolder(final BabalexCartItemHolder holder, int position) {
         BabalexCartItem currentItem = orderList.get(position);
         holder.image.setImageResource(Utils.getDrawableResIdByImageTitle(context,
                 currentItem.getBabalexItem().getImageName()));
@@ -45,8 +56,19 @@ class CartOrderAdapter extends RecyclerView.Adapter<CartOrderAdapter.BabalexCart
         holder.itemAmount.setText(Integer.toString(currentItem.getCount()));
         holder.itemPrice.setText(Double.toString(currentItem.getBabalexItem().getPrice()));
 
+        holder.addItemCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderChangedListener.onItemAdded(orderList.get(holder.getAdapterPosition()).getId());
+            }
+        });
 
-        // TODO make it intractable
+        holder.removeItemCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderChangedListener.onItemRemoved(orderList.get(holder.getAdapterPosition()).getId());
+            }
+        });
 
     }
 
@@ -80,9 +102,19 @@ class CartOrderAdapter extends RecyclerView.Adapter<CartOrderAdapter.BabalexCart
             addItemCount = (ImageButton) itemView.findViewById(R.id.add_item_button);
             removeItemCount = (ImageButton) itemView.findViewById(R.id.remove_item_button);
 
-            itemTitle.setTypeface(Typeface.createFromAsset(context.getAssets(), "BradHitc.ttf"), Typeface.BOLD);
+            itemTitle.setTypeface(titleTypeface, Typeface.BOLD);
+            dollarSign.setTypeface(textRegularLightTypeface);
+            itemPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
+            itemAmount.setTypeface(textRegularTypeface, Typeface.BOLD);
+
 
         }
+    }
+
+    interface OnOrderChangedListener {
+        void onItemAdded(int itemId);
+
+        void onItemRemoved(int itemId);
     }
 
 }

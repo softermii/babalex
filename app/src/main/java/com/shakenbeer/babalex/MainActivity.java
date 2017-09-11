@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shakenbeer.babalex.cart.CartActivity;
 import com.shakenbeer.babalex.common.Utils;
@@ -29,8 +30,7 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String SELECTED_ITEM_NAME = "selected_item_name";
-    public static final String SELECTED_ITEM_IMAGE_RES = "selected_item_image_res";
+    public static final String SELECTED_ITEM_ID = "selected_item_id";
     public static final String SELECTED_ITEM_CATEGORY_BACKGROUND = "selected_item_category_background";
     private static final String TAG = "MainActivity";
     private SuperBabalexView superBabalex;
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView categoriesRecyclerView;
     private RecyclerView backgroundRecyclerView;
     private CategoryAdapter categoryAdapter;
+    private BabalexItem currentBabalexItem;
 
     private Sweets sweets;
 
@@ -110,6 +111,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItemToOrder();
+            }
+        });
+
         updateUI();
     }
 
@@ -152,6 +160,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void addItemToOrder() {
+        if (currentBabalexItem != null) {
+            App.getOrderInstance().addItem(currentBabalexItem.getId());
+            Toast.makeText(this, "Item is added to cart: " + currentBabalexItem.getId(), Toast.LENGTH_SHORT).show();
+            // TODO show cart badge
+        }
+    }
+
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
         public void onScroll(float shiftByX, float alpha) {
@@ -164,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
             //Don't change babalex item data while scrolling
             if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
                 babalexItemTitle.setText(babalex.getTitle());
+                currentBabalexItem = babalex;
             }
             onScroll(shiftByX, alpha);
         }
@@ -203,9 +220,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemSelected(int position, BabalexItem item, View imageView) {
             Intent intent = new Intent(MainActivity.this, ExtendedBabalexActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString(SELECTED_ITEM_NAME, item.getTitle());
-            bundle.putInt(SELECTED_ITEM_IMAGE_RES, Utils.getDrawableResIdByImageTitle(
-                    MainActivity.this, item.getImageName()));
+            bundle.putInt(SELECTED_ITEM_ID, item.getId());
             bundle.putInt(SELECTED_ITEM_CATEGORY_BACKGROUND, Utils.getDrawableResIdByImageTitle(MainActivity.this,
                     sweets.getCategory(categoryAdapter.getSelectedPosition()).getImageName()));
 

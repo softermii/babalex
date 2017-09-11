@@ -1,7 +1,5 @@
 package com.shakenbeer.babalex.cart;
 
-import android.content.Context;
-
 import com.shakenbeer.babalex.App;
 import com.shakenbeer.babalex.common.BasePresenter;
 import com.shakenbeer.babalex.data.BabalexCartItem;
@@ -17,20 +15,12 @@ import java.util.Map;
 
 public class CartPresenter extends BasePresenter<CartView> {
 
-    private Context context;
     private Map<Integer, BabalexItem> sweetsMap;
-    private List<BabalexCartItem> itemsToShow;
     private Map<Integer, Integer> order;
-
-    CartPresenter(Context context) {
-        // this context field must be removed with API integration
-        this.context = context;
-    }
 
     @Override
     public void onResume() {
         super.onResume();
-        itemsToShow = new ArrayList<>();
         order = App.getOrderInstance().getOrderMap();
         sweetsMap = App.getBabalexItemsInstance();
         loadAndShowOrder();
@@ -38,12 +28,44 @@ public class CartPresenter extends BasePresenter<CartView> {
     }
 
     private void loadAndShowOrder() {
+        List<BabalexCartItem> itemsToShow = new ArrayList<>();
         for (int itemId : order.keySet()) {
             itemsToShow.add(new BabalexCartItem(itemId, order.get(itemId),
                     sweetsMap.get(itemId)));
         }
 
         getMvpView().showOrder(itemsToShow);
+
+        calculateTotalPrice(itemsToShow);
+    }
+
+    private void calculateTotalPrice(List<BabalexCartItem> itemsToShow) {
+        double price = 0;
+
+        for (BabalexCartItem item : itemsToShow) {
+            double itemPrice = sweetsMap.get(item.getId()).getPrice();
+            price += (itemPrice * item.getCount());
+        }
+
+        getMvpView().showTotalPrice(price);
+    }
+
+    void onItemAddedToCart(int itemId) {
+        int prevAmount = order.get(itemId);
+        order.put(itemId, ++prevAmount);
+
+        loadAndShowOrder();
+    }
+
+    void onItemRemovedToCart(int itemId) {
+        int amount = order.get(itemId);
+        if (--amount <= 0) {
+            order.remove(itemId);
+        } else {
+            order.put(itemId, amount);
+        }
+
+        loadAndShowOrder();
     }
 
 }

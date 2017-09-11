@@ -21,7 +21,7 @@ import java.util.List;
  * Created by onos on 06.09.17.
  */
 
-public class CartActivity extends BaseMVPActivity implements CartView {
+public class CartActivity extends BaseMVPActivity implements CartView, CartOrderAdapter.OnOrderChangedListener {
 
     private static final String TAG = "CartActivity";
 
@@ -34,7 +34,7 @@ public class CartActivity extends BaseMVPActivity implements CartView {
     private RecyclerView cartRecyclerView;
     private CartOrderAdapter cartOrderAdapter;
 
-    private CartPresenter presenter = new CartPresenter(this);
+    private CartPresenter presenter = new CartPresenter();
 
     @Override
     protected BasePresenter getBasePresenter() {
@@ -67,23 +67,37 @@ public class CartActivity extends BaseMVPActivity implements CartView {
         totalPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
         dollarSignView.setTypeface(textRegularLightTypeface);
 
+        cartOrderAdapter = new CartOrderAdapter(CartActivity.this, null, this);
+        cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        cartRecyclerView.setAdapter(cartOrderAdapter);
+
         backImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        cartOrderAdapter = new CartOrderAdapter(CartActivity.this, null);
-        cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        cartRecyclerView.setAdapter(cartOrderAdapter);
 
     }
-
 
     @Override
     public void showOrder(List<BabalexCartItem> orderList) {
-
         cartOrderAdapter.setOrderList(orderList);
-
     }
+
+    @Override
+    public void showTotalPrice(double price) {
+        totalPrice.setText(String.format("%.2f", price));
+    }
+
+    @Override
+    public void onItemAdded(int itemId) {
+        presenter.onItemAddedToCart(itemId);
+    }
+
+    @Override
+    public void onItemRemoved(int itemId) {
+        presenter.onItemRemovedToCart(itemId);
+    }
+
 }
