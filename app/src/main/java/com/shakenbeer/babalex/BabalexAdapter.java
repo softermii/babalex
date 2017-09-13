@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.shakenbeer.babalex.common.Utils;
 import com.shakenbeer.babalex.data.BabalexItem;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ class BabalexAdapter extends RecyclerView.Adapter<BabalexAdapter.BabalexHolder> 
         });
     }
 
-    public BabalexItem getItem(int adapterPos) {
+    BabalexItem getItem(int adapterPos) {
         return items.get(adapterPos);
     }
 

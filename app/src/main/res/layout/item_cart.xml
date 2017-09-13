@@ -1,108 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <com.shakenbeer.babalex.SquareImageView
         android:id="@+id/item_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        tools:src="@drawable/macaron4"
         android:layout_margin="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp" />
+        tools:src="@drawable/macaron4" />
 
     <TextView
         android:id="@+id/dollar_sign"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:letterSpacing="0.03"
         android:lineSpacingExtra="2dp"
         android:text="@string/dollar_sign"
         android:textAlignment="center"
         android:textColor="@color/regularText"
-        android:textSize="28sp"
+        android:textSize="21sp"
         app:layout_constraintLeft_toRightOf="@+id/item_image"
-        android:layout_marginLeft="24dp"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/item_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:letterSpacing="0.03"
-        android:lineSpacingExtra="2dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginLeft="8dp"
+        android:background="@drawable/item_cart_amount_background"
         android:text="4"
         android:textAlignment="center"
         android:textColor="@color/regularText"
-        android:textSize="28sp"
-        app:layout_constraintLeft_toRightOf="@+id/remove_item_button"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/item_price" />
+        android:textSize="21sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/item_price"
+        app:layout_constraintLeft_toRightOf="@+id/remove_item_button" />
 
     <TextView
         android:id="@+id/item_price"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginLeft="9dp"
         android:gravity="center"
         android:letterSpacing="0.03"
         android:lineSpacingExtra="2dp"
         android:text="15.97"
         android:textAlignment="center"
         android:textColor="@color/regularText"
-        android:textSize="28sp"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:layout_marginTop="7dp"
+        android:textSize="21sp"
         app:layout_constraintLeft_toRightOf="@+id/dollar_sign"
-        android:layout_marginLeft="9dp" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/dollar_sign" />
 
 
     <TextView
         android:id="@+id/item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chocolate Macaron"
-        android:textSize="21sp"
         android:layout_marginBottom="8dp"
+        android:layout_marginLeft="24dp"
+        android:text="Chocolate Macaron"
+        android:textColor="@color/candyItemTitleRed"
+        android:textSize="21sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintLeft_toRightOf="@+id/item_image"
-        android:layout_marginLeft="24dp" />
+        app:layout_constraintLeft_toRightOf="@+id/item_image" />
 
     <ImageButton
         android:id="@+id/remove_item_button"
         android:layout_width="wrap_content"
-        android:background="@android:color/transparent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_remove_black_24dp"
-        app:layout_constraintLeft_toRightOf="@+id/item_price"
-        android:layout_marginLeft="36dp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_price"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="@+id/item_price"
-        android:layout_marginTop="8dp" />
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_remove_black_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_price"
+        app:layout_constraintLeft_toRightOf="@+id/item_price"
+        app:layout_constraintTop_toTopOf="@+id/item_price" />
 
     <ImageButton
         android:id="@+id/add_item_button"
         android:layout_width="wrap_content"
-        android:background="@android:color/transparent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_black_24dp"
-        app:layout_constraintLeft_toRightOf="@+id/item_amount"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintTop_toTopOf="@+id/item_price"
         android:layout_marginTop="8dp"
+        android:src="@drawable/ic_add_black_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/item_price"
-        android:layout_marginBottom="8dp" />
+        app:layout_constraintLeft_toRightOf="@+id/item_amount"
+        app:layout_constraintTop_toTopOf="@+id/item_price" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"

@@ -6,4 +6,5 @@
     <color name="colorAccentDark">#d81b60</color>
     <color name="candyItemTitleRed">#ff2052</color>
     <color name="regularText">#333333</color>
+    <color name="white">#fff</color>
 </resources>

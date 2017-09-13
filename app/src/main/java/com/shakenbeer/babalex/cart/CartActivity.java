@@ -3,7 +3,7 @@ package com.shakenbeer.babalex.cart;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -11,12 +11,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.shakenbeer.babalex.R;
+import com.shakenbeer.babalex.common.BaseMVPActivity;
+import com.shakenbeer.babalex.common.BasePresenter;
+import com.shakenbeer.babalex.data.BabalexCartItem;
+
+import java.util.List;
 
 /**
  * Created by onos on 06.09.17.
  */
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends BaseMVPActivity implements CartView, CartOrderAdapter.OnOrderChangedListener {
 
     private static final String TAG = "CartActivity";
 
@@ -27,6 +32,14 @@ public class CartActivity extends AppCompatActivity {
     private TextView totalPriceTitleView;
     private TextView cartTextView;
     private RecyclerView cartRecyclerView;
+    private CartOrderAdapter cartOrderAdapter;
+
+    private CartPresenter presenter = new CartPresenter();
+
+    @Override
+    protected BasePresenter getBasePresenter() {
+        return presenter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +61,15 @@ public class CartActivity extends AppCompatActivity {
         cartTextView = (TextView) findViewById(R.id.cart_textView);
         cartRecyclerView = (RecyclerView) findViewById(R.id.cart_recycler_view);
 
-
         totalPriceTitleView.setTypeface(titleTypeface, Typeface.BOLD);
         cartTextView.setTypeface(titleTypeface, Typeface.BOLD);
         checkoutButton.setTypeface(textRegularTypeface, Typeface.BOLD);
         totalPrice.setTypeface(textRegularTypeface, Typeface.BOLD);
         dollarSignView.setTypeface(textRegularLightTypeface);
+
+        cartOrderAdapter = new CartOrderAdapter(CartActivity.this, null, this);
+        cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        cartRecyclerView.setAdapter(cartOrderAdapter);
 
         backImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +78,26 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
+    }
 
-        // TODO add cart adapter and related order logic
+    @Override
+    public void showOrder(List<BabalexCartItem> orderList) {
+        cartOrderAdapter.setOrderList(orderList);
+    }
+
+    @Override
+    public void showTotalPrice(double price) {
+        totalPrice.setText(String.format("%.2f", price));
+    }
+
+    @Override
+    public void onItemAdded(int itemId) {
+        presenter.onItemAddedToCart(itemId);
+    }
+
+    @Override
+    public void onItemRemoved(int itemId) {
+        presenter.onItemRemovedToCart(itemId);
     }
 
 }

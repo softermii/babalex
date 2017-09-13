@@ -1,5 +1,6 @@
 package com.shakenbeer.babalex;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -8,12 +9,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.shakenbeer.babalex.cart.CartActivity;
+import com.shakenbeer.babalex.common.Utils;
+import com.shakenbeer.babalex.data.BabalexItem;
+
+import static com.shakenbeer.babalex.MainActivity.SELECTED_ITEM_ID;
 
 /**
  * Created by onos on 29.08.17.
  */
 
 public class ExtendedBabalexActivity extends AppCompatActivity {
+
+    private BabalexItem currentBabalexItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,14 +34,16 @@ public class ExtendedBabalexActivity extends AppCompatActivity {
         if (actionBar != null)
             actionBar.hide();
 
+        currentBabalexItem = App.getBabalexItemsInstance().get(getIntent().getExtras().getInt(SELECTED_ITEM_ID));
 
-        String babalexItemName = getIntent().getExtras().getString(MainActivity.SELECTED_ITEM_NAME);
-        int babalexItemImageRes = getIntent().getExtras().getInt(MainActivity.SELECTED_ITEM_IMAGE_RES);
+        String babalexItemTitle = currentBabalexItem.getTitle();
+        int babalexItemImageRes = Utils.getDrawableResIdByImageTitle(this, currentBabalexItem.getImageName());
         int babalexBackgroundRes = getIntent().getExtras().getInt(MainActivity.SELECTED_ITEM_CATEGORY_BACKGROUND);
 
         SquareImageView imageView = (SquareImageView) findViewById(R.id.image);
         ImageView backgroundImageView = (ImageView) findViewById(R.id.background_image_view);
         Button addToCartButton = (Button) findViewById(R.id.add_to_cart_button);
+        ImageView cartIcon = (ImageView) findViewById(R.id.cart_icon);
         TextView title = (TextView) findViewById(R.id.babalex_item_title);
         TextView description = (TextView) findViewById(R.id.babalex_item_description);
         TextView titleIngredients = (TextView) findViewById(R.id.field_title_ingredients);
@@ -65,7 +77,7 @@ public class ExtendedBabalexActivity extends AppCompatActivity {
 
         backgroundImageView.setImageResource(babalexBackgroundRes);
         imageView.setImageResource(babalexItemImageRes);
-        title.setText(babalexItemName);
+        title.setText(babalexItemTitle);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +86,25 @@ public class ExtendedBabalexActivity extends AppCompatActivity {
             }
         });
 
+        cartIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ExtendedBabalexActivity.this, CartActivity.class));
+            }
+        });
+
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItemToOrder();
+            }
+        });
+
     }
 
+    private void addItemToOrder() {
+        App.getOrderInstance().addItem(currentBabalexItem.getId());
+        Toast.makeText(this, "Item is added to cart: " + currentBabalexItem.getId(), Toast.LENGTH_SHORT).show();
+    }
 
 }

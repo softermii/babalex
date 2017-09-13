@@ -16,24 +16,21 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.shakenbeer.babalex.cart.CartActivity;
+import com.shakenbeer.babalex.common.Utils;
 import com.shakenbeer.babalex.data.BabalexItem;
 import com.shakenbeer.babalex.data.Category;
 import com.shakenbeer.babalex.data.Sweets;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
-public class MainActivity extends AppCompatActivity implements Runnable {
+public class MainActivity extends AppCompatActivity {
 
-    public static final String SELECTED_ITEM_NAME = "selected_item_name";
-    public static final String SELECTED_ITEM_IMAGE_RES = "selected_item_image_res";
+    public static final String SELECTED_ITEM_ID = "selected_item_id";
     public static final String SELECTED_ITEM_CATEGORY_BACKGROUND = "selected_item_category_background";
     private static final String TAG = "MainActivity";
     private SuperBabalexView superBabalex;
@@ -50,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
     private RecyclerView categoriesRecyclerView;
     private RecyclerView backgroundRecyclerView;
     private CategoryAdapter categoryAdapter;
+    private BabalexItem currentBabalexItem;
 
     private Sweets sweets;
 
@@ -99,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         nextCategory.setTypeface(textRegularTypeface, Typeface.BOLD);
         addToCartButton.setTypeface(textRegularTypeface, Typeface.BOLD);
 
-        new Thread(this).start(); // start parsing data from babalex_products.json
-
         backgroundRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -114,11 +110,20 @@ public class MainActivity extends AppCompatActivity implements Runnable {
                 startActivity(new Intent(MainActivity.this, CartActivity.class));
             }
         });
+
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItemToOrder();
+            }
+        });
+
+        updateUI();
     }
 
-    private void updateUI(String json) {
-        Gson gson = new GsonBuilder().create();
-        sweets = gson.fromJson(json, Sweets.class);
+    // should be called after initial API response to update UI
+    private void updateUI() {
+        sweets = App.getSweetsInstance();
 
         categoryAdapter = new CategoryAdapter(this, sweets.getCategories());
         SmoothScrollLinearLayoutManager scrollLinearLayoutManager =
@@ -155,6 +160,14 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         }
     }
 
+    private void addItemToOrder() {
+        if (currentBabalexItem != null) {
+            App.getOrderInstance().addItem(currentBabalexItem.getId());
+            Toast.makeText(this, "Item is added to cart: " + currentBabalexItem.getId(), Toast.LENGTH_SHORT).show();
+            // TODO show cart badge
+        }
+    }
+
     private BabalexView.ScrollListener horizontalScrollListener = new BabalexView.ScrollListener() {
         @Override
         public void onScroll(float shiftByX, float alpha) {
@@ -167,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             //Don't change babalex item data while scrolling
             if (superBabalex.getScrollState() == SCROLL_STATE_IDLE) {
                 babalexItemTitle.setText(babalex.getTitle());
+                currentBabalexItem = babalex;
             }
             onScroll(shiftByX, alpha);
         }
@@ -206,9 +220,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         public void onItemSelected(int position, BabalexItem item, View imageView) {
             Intent intent = new Intent(MainActivity.this, ExtendedBabalexActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString(SELECTED_ITEM_NAME, item.getTitle());
-            bundle.putInt(SELECTED_ITEM_IMAGE_RES, Utils.getDrawableResIdByImageTitle(
-                    MainActivity.this, item.getImageName()));
+            bundle.putInt(SELECTED_ITEM_ID, item.getId());
             bundle.putInt(SELECTED_ITEM_CATEGORY_BACKGROUND, Utils.getDrawableResIdByImageTitle(MainActivity.this,
                     sweets.getCategory(categoryAdapter.getSelectedPosition()).getImageName()));
 
@@ -234,31 +246,4 @@ public class MainActivity extends AppCompatActivity implements Runnable {
                     backgroundRecyclerView.scrollBy(dx, (int) (dy * 0.85f));
                 }
             };
-
-    @Override
-    public void run() {
-        String json = null;
-        try {
-            InputStream inputStream = getAssets().open("babalex_products.json");
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-            json = new String(buffer, "UTF-8");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (json != null && !json.isEmpty()) {
-            final String finalJson = json;
-            babalexItemTitle.post(new Runnable() {
-                @Override
-                public void run() {
-                    updateUI(finalJson);
-                }
-            });
-        }
-
-    }
 }
